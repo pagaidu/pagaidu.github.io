@@ -6,12 +6,25 @@
         <title>pavēris logu aizkarus, redzu&nbsp;·&nbsp;Pagaidu</title>
         <meta name="Description" content="Pagaidu ir stāstu krājums laikā, kad aizmirsta valoda. Teksti tapuši mirkļa iespaidā no pieredzētā.">
         <link href="//fonts.googleapis.com" rel="dns-prefetch">
+
+        
         <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin> 
-        <link href="https://fonts.googleapis.com/css2?family=Lemonada:wght@400;500&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&display=swap"  rel="stylesheet"> 
+
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;1,300;1,400;1,700&family=Roboto:ital,wght@0,300;0,400;1,400;1,700&display=swap" rel="stylesheet">
+        
         <link rel="preload" href="/css/styles.css" as="style">
         <link rel="stylesheet" href="/css/styles.css">   
-
+<script>
+    localStorage.setItem('visited-'+window.location.pathname, true);
+var links = document.getElementsByClassName('content-entry');
+for (i=0;i<links.length;i++) {   
+  var link = links[i];
+  if (link.host == window.location.host
+  && localStorage.getItem('visited-' + link.pathname + '/')) {
+    link.dataset.visited = true;
+  }
+}
+</script>    
     </head>
     <body>
       
@@ -74,63 +87,78 @@ nostaigātās zoles, dzirdu, prātā sitas</p>
 </nav>
 
     <footer class=" footer">
-    <hr>                <ol id="submenu" class="toggle-content">
+    <hr>                <ol id="submenu" class="table-of-contents toggle-content">
                     <li>
-                        <a href="/bite-durvis-uz-lodziju/">bite durvīs uz lodžiju</a> 
+                        
+                        <a href="/bite-durvis-uz-lodziju/" class="content-entry">bite durvīs uz lodžiju</a>
                     </li>
                     <li>
-                        <a href="/griezts-metals-skind/">griezts metāls šķind</a> 
+                        
+                        <a href="/griezts-metals-skind/" class="content-entry">griezts metāls šķind</a>
                     </li>
                     <li>
-                        <a href="/iepirksanas-centrs-ir-ekskluzivi-radits/">iepirkšanās centrs ir ekskluzīvi radīts</a> 
+                        
+                        <a href="/iepirksanas-centrs-ir-ekskluzivi-radits/" class="content-entry">iepirkšanās centrs ir ekskluzīvi radīts</a>
                     </li>
                     <li>
-                        <a href="/kapnes-pieder-jaunibai/">kāpnes pieder jaunībai</a> 
+                        
+                        <a href="/kapnes-pieder-jaunibai/" class="content-entry">kāpnes pieder jaunībai</a>
                     </li>
                     <li>
-                        <a href="/klab-zobu-rindas/">klab zobu rindas</a> 
+                        
+                        <a href="/klab-zobu-rindas/" class="content-entry">klab zobu rindas</a>
                     </li>
                     <li>
-                        <a href="/lidzpanemti-kveli-alkst-veldzet/">līdzpaņemti kvēli alkst veldzēt</a> 
+                        
+                        <a href="/lidzpanemti-kveli-alkst-veldzet/" class="content-entry">līdzpaņemti kvēli alkst veldzēt</a>
                     </li>
                     <li>
-                        <a href="/musu-nerimstosa-speja-lidinaties/">mušu nerimstošā spēja lidināties</a> 
+                        
+                        <a href="/musu-nerimstosa-speja-lidinaties/" class="content-entry">mušu nerimstošā spēja lidināties</a>
                     </li>
                     <li>
-                        <a href="/nakts-dziluma-koku-vainagi-vien-paceltas-rokas/">nakts, dziļumā koku vainagi vien paceltas rokas</a> 
+                        
+                        <a href="/nakts-dziluma-koku-vainagi-vien-paceltas-rokas/" class="content-entry">nakts, dziļumā koku vainagi vien paceltas rokas</a>
                     </li>
                     <li>
-                        <a href="/pastavesana-atzita/">pastāvēšana atzīta</a> 
+                        
+                        <a href="/pastavesana-atzita/" class="content-entry">pastāvēšana atzīta</a>
                     </li>
                     <li>
-                        <a href="/paveris-logu-aizkarus-redzu/" class="active">pavēris logu aizkarus, redzu</a> 
+                        
+                        <a href="/paveris-logu-aizkarus-redzu/" class="content-entryactive">pavēris logu aizkarus, redzu</a>
                     </li>
                     <li>
-                        <a href="/pec-sala-vairums-lapas-atstaj-vietu/">pēc sala vairums lapas atstāj vietu</a> 
+                        
+                        <a href="/pec-sala-vairums-lapas-atstaj-vietu/" class="content-entry">pēc sala vairums lapas atstāj vietu</a>
                     </li>
                     <li>
-                        <a href="/piti-akcentam-vietam-sarkani-mati/">pīti, akcentam vietām sarkani, mati</a> 
+                        
+                        <a href="/piti-akcentam-vietam-sarkani-mati/" class="content-entry">pīti, akcentam vietām sarkani, mati</a>
                     </li>
                     <li>
-                        <a href="/puteklit-tevi-nave-negaidot-aizslaucis/">puteklīt, tevi nāve negaidot aizslaucīs</a> 
+                        
+                        <a href="/puteklit-tevi-nave-negaidot-aizslaucis/" class="content-entry">puteklīt, tevi nāve negaidot aizslaucīs</a>
                     </li>
                     <li>
-                        <a href="/saknes-iestigusas-kajas/">saknēs iestigušas kājas</a> <img class="highlighted" alt="highlighted text" src="/images/morethanone.png">
+                        
+                        <a href="/saknes-iestigusas-kajas/" class="content-entry">saknēs iestigušas kājas</a>
+                            <span class="more-than-one"><span>></span>1</span>
+                            
                     </li>
                     <li>
-                        <a href="/slipets-dobs-pauris-robots/">slīpēts dobs pauris robots</a> 
+                        
+                        <a href="/slipets-dobs-pauris-robots/" class="content-entry">slīpēts dobs pauris robots</a>
                     </li>
                     <li>
-                        <a href="/tikai-neskaudi-tomer/">tikai nešķaudi, tomēr</a> 
+                        
+                        <a href="/tikai-neskaudi-tomer/" class="content-entry">tikai nešķaudi, tomēr</a>
                     </li>
                     <li>
-                        <a href="/uzmetu-kuleni-vecmammas-darza/">uzmetu kūleni vecmammas dārzā</a> 
+                        
+                        <a href="/uzmetu-kuleni-vecmammas-darza/" class="content-entry">uzmetu kūleni vecmammas dārzā</a>
                     </li>    
-                </ol>
-
-
-
-<ul class="menu">
+                </ol><ul class="menu">
             <li>
                 <a class="toggle link-sm" href="#submenu">saturs</a>
             </li>    
