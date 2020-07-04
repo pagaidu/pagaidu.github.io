@@ -1,7 +1,7 @@
 var fontA = new FontFaceObserver('Roboto');
  
 Promise.all([fontA.load()]).then(function () {
-  console.log('Lemonada & Merriweather have loaded');
+  console.log('Roboto have loaded');
 });
 
 // Show an element
@@ -22,30 +22,9 @@ document.addEventListener('click', function (event) {
 	if (!event.target.classList.contains('toggle')) return;
 	// Prevent default link behavior
 	event.preventDefault();
-    window.scrollTo(0,document.body.scrollHeight);
 	// Get the content
 	var content = document.querySelector(event.target.hash);
 	if (!content) return;
 	// Toggle the content
 	toggle(content);
 }, false);
-
-
-var mq = window.matchMedia( "(min-width: 568px)" );
-if (mq.matches) {
-    // window width is at less than 570px
-}
-else {
-    // window width is greater than 570px
-}
-
-
-localStorage.setItem('visited-'+window.location.pathname,true);
-var links = document.getElementsByTagName('a');
-for (i=0;i<links.length;i++) {   
-  var link = links[i];
-  if (link.host == window.location.host
-  && localStorage.getItem('visited-' + link.pathname + '/')) {
-    link.dataset.visited = true;
-  }
-}
