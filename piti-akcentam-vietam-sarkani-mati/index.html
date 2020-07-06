@@ -10,21 +10,10 @@
         
         <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin> 
 
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;1,400;1,700&family=Roboto:ital,wght@0,300;0,400;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,300;0,400;1,400;1,700&display=swap" rel="stylesheet">
         
         <link rel="preload" href="/css/styles.css" as="style">
-        <link rel="stylesheet" href="/css/styles.css">   
-<script>
-    localStorage.setItem('visited-'+window.location.pathname, true);
-var links = document.getElementsByClassName('content-entry');
-for (i=0;i<links.length;i++) {   
-  var link = links[i];
-  if (link.host == window.location.host
-  && localStorage.getItem('visited-' + link.pathname + '/')) {
-    link.dataset.visited = true;
-  }
-}
-</script>    
+        <link rel="stylesheet" href="/css/styles.css">     
     </head>
     <body>
       
@@ -36,7 +25,7 @@ for (i=0;i<links.length;i++) {
 
 
 <div class="container">
-    <main class=" post" >       
+    <main class="post" >       
         <article class="post__article">
                 <p>pīti, akcentam vietām sarkani, mati<br>
 melnas saulesbrilles, melnas slim fit bikses<br>
@@ -61,24 +50,17 @@ arī tam paredzētais krēsls ir aizņemts</p>
     
         lapaspuse<br><br>nejauši<br>
     <a class="random-link" href="/random">
-          <img rel="preload" class="paginator random" alt="random post" src="/images/link-random.png">
+         <span class="clipped" role="img" aria-label="izvēlēts nejauši">izvēlēts nejauši</span>
       </a>
 </nav>
-
-    <footer class=" footer">
+    <footer class="footer">
     <hr>
-
         <ul class="menu">
             <li><a href="/">par projektu</a></li>
             <li><a href="mailto:projekts.pagaidu@protonmail.com">saziņa</a></li>
             <li><a href="/">pielikums(drīzumā)</a></li>
-            <li>
-                <a class="toggle" href="#submenu">saturs</a><div class="has-arrow"></div>
-            </li>    
-            
-            
-            
-        </ul>                <ol id="submenu" class="table-of-contents toggle-content">
+            <li><a class="toggle" href="#submenu">saturs</a><div class="has-arrow"></div></li>
+        </ul>                <ol id="submenu" class="table-of-contents--list toggle-content">
                     <li>
                         <a href="/bite-durvis-uz-lodziju/" class="content-entry ">bite durvīs uz lodžiju</a>
                     </li>
@@ -129,7 +111,7 @@ arī tam paredzētais krēsls ir aizņemts</p>
                         <a href="/tikai-neskaudi-tomer/" class="content-entry ">tikai nešķaudi, tomēr</a>
                     </li>    
                 </ol><hr>                <p class="content-licence">
-                    Licencēts ar <a class="link-sm font-weight-400" href="https://creativecommons.org/about/cclicenses/#by-nc-sa" rel="license">CC BY-NC-SA 4.0</a> licenci.      
+                    Licencēts ar <a href="https://creativecommons.org/about/cclicenses/#by-nc-sa" rel="license">CC BY-NC-SA 4.0</a> licenci.     
                 </p></footer>
 </div>
         <script src="/assets/js/fontfaceobserver.js"></script>
