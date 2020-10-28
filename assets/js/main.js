@@ -1,30 +1,16 @@
-var fontA = new FontFaceObserver('Roboto');
- 
-Promise.all([fontA.load()]).then(function () {
-  console.log('Roboto have loaded');
+
+
+const toggle = document.querySelector('.toggle');
+const submenu = document.getElementById('saturs');
+
+toggle.addEventListener('click', function(e) {
+   
+  submenu.classList.toggle('showSubMenu');
+      e.preventDefault();
 });
 
-// Show an element
-var show = function (elem) {
-	elem.classList.add('is-visible');
-};
-// Hide an element
-var hide = function (elem) {
-	elem.classList.remove('is-visible');
-};
-// Toggle element visibility
-var toggle = function (elem) {
-	elem.classList.toggle('is-visible');
-};
-// Listen for click events
-document.addEventListener('click', function (event) {
-	// Make sure clicked element is our toggle
-	if (!event.target.classList.contains('toggle')) return;
-	// Prevent default link behavior
-	event.preventDefault();
-	// Get the content
-	var content = document.querySelector(event.target.hash);
-	if (!content) return;
-	// Toggle the content
-	toggle(content);
-}, false);
+
+var arrow = document.querySelector('.menu-table-of-contents');
+arrow.addEventListener('click', function(event) {
+  event.target.classList.toggle('menu-table-of-contents-active');
+});
