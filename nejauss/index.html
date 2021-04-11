@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Rudens toņi gan kokos, gan...&nbsp;·&nbsp;Pagaidu</title>
+        <title>Pagaidu</title>
         <meta name="Description" content="Pagaidu ir tekstu krājums latviešu valodā.">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -34,24 +34,32 @@
 <div class="container">
     <main class="post" >       
         <article class="post__article">
-            <p class="note" role="note">
-                Pēc sala vairums lapas atstāj vietu.
-            </p>
-            <p>Rudens toņi gan kokos, gan visapkārt pa zemi. Pagriežos ar dibenskatu pretī, noliecu galvu un, cauri kājstarpei skatoties, domāju par zaros veiksminiekiem, cilvēkiem.</p>
+            <script>
+  const comingFromPost = document.referrer; 
 
+  const allPosts = 
+    ["/enas-puse/","/epizode-103-serijas-eka/","/izvelies-nakti-vai-dienu/","/klab-zobu-rindas/","/mirdz-migla/","/puteklit-tevi-nave-negaidot/","/saknes-iestigusas-kajas/","/skatos-pasaule/","/tikai-neskaudi-tomer/","/autombili-iesezas-sieva-un-virs/","/kapnes-pieder-jaunibai/","/lidzpanemts-alkst-veldzet/","/nauda-nauda/","/piti-akcentam-vietam-sarkani/","/rudens-toni-gan-kokos-gan/","/bite-durvis-uz-lodziju/","/griezts-metals-skind/","/iepirksanas-centrs/","/nakts-dziluma-koku-vainagi/","/paveris-logu-aizkarus-redzu/","/tudal-biezokni-patverusas/","/musu-speja-lidinaties/","/uzmetu-kuleni-vecmammas/",];
+  
+  const allPostsFiltered = allPosts.filter(URLfilter);
+  
+  function URLfilter(value) {
+    return value !== comingFromPost;
+  }
+
+  function linkToRandomBlogPost() {
+      const randomPostLink = allPostsFiltered[Math.floor(Math.random() * allPostsFiltered.length)];
+      return randomPostLink;
+  }
+
+  location.replace(linkToRandomBlogPost())
+</script>
+
+<noscript>
+  <h2>JavaScript ir izslēgts!</h2>
+    <p>Izvēlēties tekstu nejauši var tikai ar JavaScript. </p><a href="/">Uz sākumlapu</a>
+</noscript>
         </article>
     </main>
-    <nav class="below-page">
-    alfabēta secībā <br>
-    
-         <a rel="prev" class="font-weight-400" href="/puteklit-tevi-nave-negaidot/">iepriekšējais</a>&nbsp;vai
-        <a rel="next" class="font-weight-400" href="/saknes-iestigusas-kajas/">nākošais</a><br><br>nejaušs<br>
-    <a class="random-link" href="/random">
-         <span class="clipped" role="img" aria-label="izvēlēts nejauši">izvēlēts nejauši</span>
-      </a>
-</nav>
-<hr class="menu-hr-first">
-    
     <footer class="footer">
         <ul class="menu">      
             <li><a href="/prieksvards" >priekšvārds</a></li> 
@@ -60,7 +68,7 @@
 <div id="saturs">
 <ol class="table-of-contents--list">
                     <li>
-                        <a href="/autombilī-iesezas-sieva-un-virs/" class="content-entry "><span class="read" aria-hidden="true"></span>Autombilī iesēžas sieva un vīrs...</a>                         
+                        <a href="/autombili-iesezas-sieva-un-virs/" class="content-entry "><span class="read" aria-hidden="true"></span>Autombilī iesēžas sieva un vīrs...</a>                         
                     </li>
                     <li>
                         <a href="/bite-durvis-uz-lodziju/" class="content-entry "><span class="read" aria-hidden="true"></span>Bite durvīs uz lodžiju...</a>                         
@@ -115,7 +123,7 @@
                         <a href="/puteklit-tevi-nave-negaidot/" class="content-entry "><span class="read" aria-hidden="true"></span>Puteklīt, tevi nāve negaidot...</a>                         
                     </li>
                     <li>
-                        <a href="/rudens-toni-gan-kokos-gan.../" class="content-entry active"><span class="read" aria-hidden="true"></span>Rudens toņi gan kokos, gan...</a>                         
+                        <a href="/rudens-toni-gan-kokos-gan/" class="content-entry "><span class="read" aria-hidden="true"></span>Rudens toņi gan kokos, gan...</a>                         
                     </li>
                     <li>
                         <a href="/saknes-iestigusas-kajas/" class="content-entry "><span class="read" aria-hidden="true"></span>saknēs iestigušas kājas...</a><span class="tag multiple"><img src="/images/multiple.svg" alt="multiple texts"/></span>
