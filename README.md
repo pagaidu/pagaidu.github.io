@@ -1,1 +1,1 @@
-# ~~pagaidu.github.io~~ pagaidu.lv
+Website Pagaidu is a collection of short stories and meditative texts.
