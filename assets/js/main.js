@@ -17,8 +17,8 @@ loadingOverlay.innerHTML = `
   <div class="loading-text">Pagaidi</div>
   <div class="loading-percentage">0%</div>
   <div class="fallback-message" style="display: none;">
-    If loading takes too long, please visit the site even if not fully loaded.
-    <a href="#" class="disable-overlay">Disable overlay</a>
+    Ielāde rit neraksturīgi ilgi.
+    <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
   </div>
 `;
 document.body.appendChild(loadingOverlay);
