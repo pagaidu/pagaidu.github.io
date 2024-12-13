@@ -146,6 +146,13 @@ function setActiveLink() {
   });
 }
 
+function initializeVideo() { 
+  const video = document.getElementById('front__cover-video');
+   if (video) { 
+    video.play(); 
+    } 
+  }
+
 function initializeDropdown() {
   seamless.polyfill();
 
@@ -293,6 +300,7 @@ function resetScrollPosition() {
 document.addEventListener('DOMContentLoaded', () => { 
 
   document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  initializeVideo();
   initializeDropdown();
 
   if ('scrollRestoration' in history) {
@@ -300,26 +308,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  barba.hooks.leave(() => { 
 
-    }); 
   barba.hooks.afterLeave(() => { 
     resetScrollPosition(); 
-
     }); 
-    barba.hooks.beforeEnter((data) => { 
+  barba.hooks.beforeEnter((data) => { 
       updateHead(data.next.html); 
       setActiveLink(); 
       updateFooterClass(data.next.namespace); 
+  }); 
 
-      }); 
-      barba.hooks.enter(() => { 
-
-        }); 
-        barba.hooks.afterEnter(() => { 
-          
-
-        }); 
   barba.init({
     transitions: [
       {
@@ -433,27 +431,27 @@ document.addEventListener('DOMContentLoaded', () => {
         to: { namespace: ['home'] },
         
         leave(data) {
-
           return overlayEnter().then(() => {
             data.current.container.style.display = 'none';
           });
         },
-  
+      
         enter(data) { // Fade in the new content 
           const newContainer = document.querySelector('.fadein');
-          newContainer.style.opacity = 0; // Ensure content starts with opacity 0 
+          newContainer.style.opacity = 0; 
           return Promise.all([ 
-            overlayLeave().then(() => { 
-            }), 
+            overlayLeave(), 
             anime({ 
               targets: newContainer, 
-              opacity: [0, 1], // Fade in the content
+              opacity: [0, 1],
               duration: ANIMATION_DURATIONS.loadingContentFadeIn, 
               easing: 'easeInOutQuad' 
             }).finished 
-          ]); 
+          ]).then(() => {
+            initializeVideo();
+          });
         }
-      }
+      }      
     ],
   });
 
