@@ -29,18 +29,18 @@
     <meta name="twitter:image" content="/assets/images/cover-tw.jpg">
     <link rel="preload" href="/assets/css/styles.css" as="style">
     <link rel="stylesheet" href="/assets/css/styles.css">
-    <noscript>
-        <style>
-            .dropdown-toggle.js-only { display: none; }
-        </style>
-        <p>Versija bez JavaScript.</p>
-    </noscript>
-    <script src="/assets/js/seamless-scroll-polyfill.js"></script>
+    <script defer src="/assets/js/seamless-scroll-polyfill.js"></script>
     <script defer src="/assets/js/barba.min.js"></script>
     <script defer src="/assets/js/anime.min.js"></script>
-</head>
-    <body data-barba="wrapper">
-      <div class="fadein">
+  </head>
+  <body data-barba="wrapper">
+    <noscript>
+      <style>
+        .dropdown-toggle.js-only { display: none; }
+      </style>
+      <p>Versija bez JavaScript.</p>
+    </noscript>
+    <div class="fadein">
               <div data-barba="container" data-barba-namespace="home" class="row">
             <div class="column front">
                 <header class="front__cover">
@@ -79,17 +79,17 @@
                                 Saturs kārtots alfabētiski pēc virsraksta vai teksta pirmā burta. <span class="color-indigo-300 bg-page-color">Pelēcīgajā indigo</span> ir ievadvārdi, kas tikai precizē kontekstu.
                                 <span class="line-through">Daži teksti ir klausāmi</span>
                                 <span class="tag audio">
-                                  <img src="assets/images/tag-audio.svg" alt="audio teksts"/>
+                                  <img src="/assets/images/tag-audio.svg" alt="audio teksts"/>
                                 </span>, 
                                 daži ir vairāku tekstu kopums 
                                 <span class="tag multiple">
-                                  <img src="assets/images/tag-multiple.svg" alt="vairāki teksti"/>
+                                  <img src="/assets/images/tag-multiple.svg" alt="vairāki teksti"/>
                                 </span>.
 
                                 <span class="line-through">Papildus vizuālie materiāli skatāmi
                                 <a href="#">pielikumā</a>. Uzzināt vairāk <a href="#">par projektu</a>.</span>
                                 Iespēja 
-                                <a href="atbalsts">atbalstīt</a>.</p>
+                                <a href="/atbalsts">atbalstīt</a>.</p>
                         </div>
                 </main>
             </div>
@@ -272,7 +272,7 @@
     </div>
 </footer>
  
-      </div>
-      <script defer src="/assets/js/main.js"></script>
-    </body>
+    </div>
+    <script defer src="/assets/js/main.js"></script>
+  </body>
 </html>

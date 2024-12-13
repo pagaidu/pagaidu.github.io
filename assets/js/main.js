@@ -146,13 +146,6 @@ function setActiveLink() {
   });
 }
 
-function autoplayVideo() { 
-  const video = document.querySelector('video'); 
-  if (video) { 
-    video.play(); 
-  } 
-}
-
 function initializeDropdown() {
   seamless.polyfill();
 
@@ -299,7 +292,6 @@ function resetScrollPosition() {
 
 document.addEventListener('DOMContentLoaded', () => { 
 
-
   document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
   initializeDropdown();
 
@@ -317,16 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }); 
     barba.hooks.beforeEnter((data) => { 
       updateHead(data.next.html); 
-      // Update head elements before new content is fully loaded 
+      setActiveLink(); 
       updateFooterClass(data.next.namespace); 
-      // Update footer class before new content is fully loaded 
+
       }); 
       barba.hooks.enter(() => { 
-        // Any code to run during enter transition 
+
         }); 
         barba.hooks.afterEnter(() => { 
-          setActiveLink(); 
-          // Set active link after new content is fully loaded
+          
+
         }); 
   barba.init({
     transitions: [
@@ -452,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
           newContainer.style.opacity = 0; // Ensure content starts with opacity 0 
           return Promise.all([ 
             overlayLeave().then(() => { 
-              autoplayVideo(); 
             }), 
             anime({ 
               targets: newContainer, 
