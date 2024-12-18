@@ -44,20 +44,14 @@
               <div data-barba="container" data-barba-namespace="home" class="row">
             <div class="column front">
                 <header class="front__cover">
-                        <video 
-                                id="front__cover-video"
-                                muted="muted"
-                                autoplay=""
-                                playsinline
-                                loop
-                                poster="/assets/images/pagaidu-book-cover.jpg">
-                            <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4"></source>
-                            <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm"></source>
-                            <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg"></source>
-
-                        </video>
-                        <span class="front__cover-heading">Pagaidu</span>
-                        <span class="front__cover-publisher">www</span>
+                    <video id="front__cover-video" muted="muted" autoplay playsinline loop preload="auto" poster="/assets/images/pagaidu-book-cover.jpg">
+                        <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4"></source>
+                        <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm"></source>
+                        <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg"></source>
+                      </video>
+                      
+                    <span class="front__cover-heading">Pagaidu</span>
+                    <span class="front__cover-publisher">www</span>
                 </header>
                 <main class="front__descr">
                         
@@ -274,5 +268,6 @@
  
     </div>
     <script defer src="/assets/js/main.js"></script>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43fc4571eca348319c6158023797ce28"}'></script>
   </body>
 </html>
