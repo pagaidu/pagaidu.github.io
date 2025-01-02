@@ -1,99 +1,24 @@
 const ANIMATION_DURATIONS = {
-  overlayEnter: 700,
-  overlayLeave: 700,
-  fadeIn: 800,
-  fadeOut: 800,
-  loadingFadeOut: 700,
-  loadingDots: 500, 
-  fadeOverlap: 300,
-  loadingContentFadeIn:1600,
-  loadingContentSlide:700
-
-};
-// Show loading overlay on initial load
-const loadingOverlay = document.createElement('div');
-loadingOverlay.classList.add('loading-overlay');
-loadingOverlay.innerHTML = `
-  <div class="loading-text">Pagaidi</div>
-  <div class="loading-percentage">0%</div>
-  <div class="fallback-message" style="display: none;">
-    Ielāde rit neraksturīgi ilgi.
-    <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
-  </div>
-`;
-document.body.appendChild(loadingOverlay);
-
-const loadingPercentage = loadingOverlay.querySelector('.loading-percentage');
-
-// Add fallback message if loading takes too long
-setTimeout(() => {
-  const fallbackMessage = loadingOverlay.querySelector('.fallback-message');
-  fallbackMessage.style.display = 'block';
-}, 10000);
-
-// Add event listener to disable overlay
-const disableOverlayLink = loadingOverlay.querySelector('.disable-overlay');
-disableOverlayLink.addEventListener('click', (event) => {
-  event.preventDefault();
-  loadingOverlay.remove();
-});
-
-// Update loading percentage
-const updateLoadingPercentage = (percentage) => {
-  loadingPercentage.textContent = `${Math.floor(percentage)}%`;
+  overlayEnter: 0.8,
+  overlayLeave: 0.8,
+  fadeIn: 0.8,
+  fadeOut: 0.8,
+  loadingContentFadeIn: 1.6,
+  preloaderFadeOut: 0.8,
+  contentReveal: 0.8
 };
 
-// Simulate loading progress
-let loadingProgress = 0;
-const loadingInterval = setInterval(() => {
-  if (loadingProgress < 100) {
-    const increment = loadingProgress < 20 ? Math.random() * 20 : Math.random() * 5;
-    loadingProgress += increment;
-    if (loadingProgress > 100) loadingProgress = 100; // Cap at 100%
-    updateLoadingPercentage(loadingProgress);
-  } else {
-    clearInterval(loadingInterval);
-  }
-}, 100);
+const ANIMATION_EASES = {
+  overlayEnter: 'power2.inOut',
+  overlayLeave: 'power2.inOut',
+  fadeIn: 'power2.out',
+  fadeOut: 'power2.out'
+};
 
-let initialLoad = true; // Track if this is the initial page load
 
-window.addEventListener('load', async () => {
-  if (initialLoad) {
-    clearInterval(loadingInterval);
-    updateLoadingPercentage(100);
-    closeDropdown();
-    // Fade out the innerHTML of the loading overlay
-    await anime({
-      targets: loadingOverlay.children,
-      opacity: [1, 0],
-      duration: ANIMATION_DURATIONS.loadingFadeOut,
-      easing: 'easeInOutQuad'
-    }).finished;
-
-    // Uncover the content by sliding the overlay out to the right and fading in the content simultaneously
-    const contentContainer = document.querySelector('.fadein'); // Adjust selector as needed
-    contentContainer.style.opacity = 0; // Ensure content starts with opacity 0
-    await Promise.all([
-      anime({
-        targets: loadingOverlay,
-        translateX: ['0%', '100%'], // Slide out to the right
-        duration: ANIMATION_DURATIONS.loadingContentSlide,
-        easing: 'easeInOutQuad'
-      }).finished,
-      anime({
-        targets: contentContainer,
-        opacity: [0, 1], // Fade in the content
-        duration: ANIMATION_DURATIONS.loadingContentFadeIn,
-        easing: 'easeInOutQuad'
-      }).finished
-    ]);
-    loadingOverlay.remove(); // Remove preloader from DOM
-    initialLoad = false; // Set initial load to false after finishing the animation
-  }
-});
 
 function updateHead(newPageRawHTML) {
+
   const head = document.head;
   const newPageRawHead = newPageRawHTML.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[1];
   const newPageHead = document.createElement('div');
@@ -116,6 +41,16 @@ function updateHead(newPageRawHTML) {
   });
 }
 
+function updateFooter(newPageRawHTML) {
+  const footer = document.querySelector('.footer');
+  const newPageRawFooter = newPageRawHTML.match(/<footer[^>]*>([\s\S.]*)<\/footer>/i)[1];
+  const newPageFooter = document.createElement('div');
+  newPageFooter.innerHTML = newPageRawFooter;
+
+  footer.innerHTML = newPageFooter.innerHTML;
+  console.log('Footer updated');
+}
+
 function updateFooterClass(namespace) { 
   const footer = document.querySelector('.footer'); 
   if (footer) { // Check if the footer element exists
@@ -128,22 +63,28 @@ function updateFooterClass(namespace) {
 }
 
 function setActiveLink() {
-  const currentPath = window.location.pathname.replace(/\/$/, ''); // Normalize trailing slash
-  const footerLinks = document.querySelectorAll('.footer-link');
-
-  // Remove focus from any currently focused element
+  const currentPath = window.location.pathname.replace(/\/$/, '');
+  const footerLinks = Array.from(document.querySelectorAll('.footer-link'));
+  
   if (document.activeElement) {
     document.activeElement.blur();
   }
 
+  const classesToAdd = [];
+  const classesToRemove = [];
+
   footerLinks.forEach(link => {
-    const linkPath = link.getAttribute('href').replace(/\/$/, ''); // Normalize trailing slash
+    const linkPath = link.getAttribute('href').replace(/\/$/, '');
     if (linkPath === currentPath) {
-      link.classList.add('active'); // Add active class to the matching link
+      classesToAdd.push(link);
     } else {
-      link.classList.remove('active'); // Remove active class from non-matching links
+      classesToRemove.push(link);
     }
   });
+
+  // Batch class operations
+  classesToRemove.forEach(link => link.classList.remove('active'));
+  classesToAdd.forEach(link => link.classList.add('active'));
 }
 
 function initializeVideo() { 
@@ -218,59 +159,18 @@ function closeDropdown() {
   }
 }
 
-function fadeOut(container) {
-  return new Promise((resolve) => {
-    if (container) {
-      anime({
-        targets: container,
-        opacity: [1, 0],
-        duration: ANIMATION_DURATIONS.fadeOut,
-        easing: 'easeInOutQuad',
-        complete: () => {
-          resolve();
-        },
-      });
-    } else {
-      resolve();
-    }
-  });
-}
-
-function fadeIn(container) {
-  return new Promise((resolve) => {
-    if (container) {
-      // Ensure container is hidden and then fade in
-      container.style.visibility = 'hidden';
-      container.style.opacity = '0';
-
-      requestAnimationFrame(() => {
-        container.style.visibility = 'visible';
-        anime({
-          targets: container,
-          opacity: [0, 1],
-          duration: ANIMATION_DURATIONS.fadeIn,
-          easing: 'easeInOutQuad',
-          complete: resolve,
-        });
-      });
-    } else {
-      resolve();
-    }
-  });
-}
-
 function overlayEnter() {
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
     document.body.appendChild(overlay);
 
-    anime({
-      targets: overlay,
-      translateX: ['-100%', '0%'],
+    gsap.to(overlay, {
+      x: '0%',
+      from: { x: '-100%' },
       duration: ANIMATION_DURATIONS.overlayEnter,
-      easing: 'easeInOutQuad',
-      complete: resolve
+      ease: ANIMATION_EASES.overlayEnter,
+      onComplete: resolve,
     });
   });
 }
@@ -278,14 +178,41 @@ function overlayEnter() {
 function overlayLeave() {
   return new Promise((resolve) => {
     const overlay = document.querySelector('.overlay');
-    anime({
-      targets: overlay,
-      translateX: ['0%', '100%'],
+
+    if (!overlay) {
+      resolve(); // Fallback if overlay doesn't exist
+      return;
+    }
+
+    gsap.to(overlay, {
+      x: '100%',
       duration: ANIMATION_DURATIONS.overlayLeave,
-      easing: 'easeInOutQuad',
-      complete: () => {
+      ease: ANIMATION_EASES.overlayLeave,
+      onComplete: () => {
         overlay.remove();
         resolve();
+      },
+    });
+  });
+}
+
+function gsapFade(element, fromOpacity, toOpacity, duration, ease, onComplete) {
+  if (!element) {
+    console.error('Element not found for gsapFade');
+    return Promise.resolve(); // Return an immediately resolved promise if the element doesn't exist
+  }
+  
+  return new Promise(resolve => {
+    gsap.to(element, {
+      opacity: toOpacity,
+      duration: duration,
+      ease: ease,
+      onComplete: () => {
+        if (onComplete) onComplete();
+        resolve();
+      },
+      onStart: () => {
+        element.style.opacity = fromOpacity.toString(); // Ensure starting opacity
       }
     });
   });
@@ -298,25 +225,124 @@ function resetScrollPosition() {
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
-
   document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
   initializeVideo();
+  
+    // Check if the preloader should run
+    const preloaderKey = 'preloaderShown';
+    const isInitialVisit = !sessionStorage.getItem(preloaderKey);
+
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    const loadingCircleBase = document.querySelector('.loading-circle');
+    const loadingCircle = document.querySelector('.circle-progress');
+    const loadingText = document.querySelector('.loading-text');
+    const fallbackMessage = document.querySelector('.fallback-message');
+
+    // Show fallback message if loading takes too long
+    setTimeout(() => {
+      fallbackMessage.style.display = 'block';
+    }, 10000);
+
+    // Add event listener to disable overlay
+    const disableOverlayLink = loadingOverlay.querySelector('.disable-overlay');
+    disableOverlayLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      loadingOverlay.style.display = 'none';
+    });
+
+    // Animate loading progress
+    let progress = 0;
+
+    const updateProgress = () => {
+      const offset = (100 - progress) * (314 / 100); // 314 is the circumference of the circle
+      loadingCircle.style.strokeDashoffset = offset;
+    };
+
+    const progressInterval = setInterval(() => {
+      if (progress < 100) {
+        progress += Math.random() * (progress < 20 ? 20 : 5); // Faster at the start
+        progress = Math.min(progress, 100); // Cap at 100%
+        updateProgress();
+      } else {
+        clearInterval(progressInterval);
+      }
+    }, 100);
+
+    // Handle initial page load
+    let initialLoad = true;
+
+    window.addEventListener('load', async () => {
+      if (initialLoad) {
+        clearInterval(progressInterval);
+        progress = 100;
+        updateProgress();
+    
+        // Fade out text and circle
+        await gsap.to([loadingText, loadingCircleBase, fallbackMessage], {
+          opacity: 0,
+          duration: ANIMATION_DURATIONS.fadeOut,
+          ease: ANIMATION_EASES.fadeOut,
+        });
+    
+        // Target content to hide initially
+        const contentContainer = document.querySelector('.content-wrapper');
+        if (contentContainer) {
+          contentContainer.style.opacity = 0; // Ensure content starts hidden
+        }
+    
+        // Transform loading-overlay into overlayLeave animation
+        const overlayLeaveAnimation = gsap.to(loadingOverlay, {
+          x: '100%', // Move overlay to the right
+          duration: ANIMATION_DURATIONS.overlayLeave,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            loadingOverlay.remove(); // Remove preloader from DOM
+          },
+        });
+    
+        // Play overlayLeave animation and reveal content
+        overlayLeaveAnimation.play(); // Start overlayLeave animation
+        if (contentContainer) {
+          await gsap.to(contentContainer, {
+            opacity: 1,
+            duration: ANIMATION_DURATIONS.fadeIn,
+            ease: 'power2.out',
+            delay: ANIMATION_DURATIONS.overlayLeave / 2, // Slight delay to sync with overlay
+          });
+        }
+    
+        // Mark initial load as completed
+        initialLoad = false;
+        sessionStorage.setItem(preloaderKey, 'true');
+      }
+    });
+    
+    
+
   initializeDropdown();
 
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
 
-
-
   barba.hooks.afterLeave(() => { 
     resetScrollPosition(); 
-    }); 
-  barba.hooks.beforeEnter((data) => { 
-      updateHead(data.next.html); 
-      setActiveLink(); 
-      updateFooterClass(data.next.namespace); 
+    const homeContainer = document.querySelector('[data-barba-namespace="home"]');
+    if (homeContainer) {
+      homeContainer.style.opacity = ''; // Reset styles
+      homeContainer.style.display = ''; 
+    }
   }); 
+  
+  barba.hooks.beforeEnter((data) => { 
+    updateHead(data.next.html); 
+    updateFooter(data.next.html);
+    updateFooterClass(data.next.namespace); 
+  }); 
+
+  barba.hooks.afterEnter(() => { 
+    sessionStorage.removeItem('barba-transition');
+  });
 
   barba.init({
     transitions: [
@@ -324,87 +350,32 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'post-fade',
         from: { namespace: ['post'] },
         to: { namespace: ['post'] },
-        beforeLleave() {
-        },   
+  
         leave(data) {
-          resetScrollPosition(); 
+          resetScrollPosition();
           closeDropdown();
           const currentContainer = data.current.container.querySelector('.content-wrapper');
-
-          return fadeOut(currentContainer).then(() => { 
-            data.current.container.style.display = 'none'; 
-          })
-        },
-        
-        enter(data) {
-          const nextContainer = data.next.container.querySelector('.content-wrapper'); 
-          nextContainer.style.opacity = '0'; 
-          nextContainer.style.display = 'block'; 
-          return fadeIn(nextContainer).then(() => { 
-            initializeDropdown(); 
-          });
-        }
-      },
-      {
-        name: 'post-to-default',
-        from: { namespace: ['post'] },
-        to: { namespace: ['default'] },
-        
-        leave(data) {
-
-          closeDropdown();
-          return overlayEnter().then(() => {
+  
+          return gsapFade(currentContainer, 1, 0, ANIMATION_DURATIONS.fadeOut, 'power2.out', () => {
             data.current.container.style.display = 'none';
           });
         },
-  
-        enter(data) {
-          const nextContainer = data.next.container.querySelector('.content-wrapper');
-          nextContainer.style.opacity = '0';
-          nextContainer.style.display = 'block';
-          const overlayLeavePromise = overlayLeave();
-          const fadeInPromise = new Promise((resolve) => {
-            setTimeout(() => {
-              fadeIn(nextContainer);
-              resolve();
-            }, ANIMATION_DURATIONS.fadeOverlap);
-          });
-          return Promise.all([overlayLeavePromise, fadeInPromise]);
-        }
-      },
-      {
-        name: 'default-to-default',
-        from: { namespace: ['default'] },
-        to: { namespace: ['default'] },
-        
-        leave(data) {
 
-          return overlayEnter().then(() => {
-            data.current.container.style.display = 'none';
-          });
-        },
-  
         enter(data) {
           const nextContainer = data.next.container.querySelector('.content-wrapper');
-          nextContainer.style.opacity = '0';
+
           nextContainer.style.display = 'block';
-          const overlayLeavePromise = overlayLeave();
-          const fadeInPromise = new Promise((resolve) => {
-            setTimeout(() => {
-              fadeIn(nextContainer);
-              resolve();
-            }, ANIMATION_DURATIONS.fadeOverlap);
-          });
-          return Promise.all([overlayLeavePromise, fadeInPromise]);
-        }
+          nextContainer.style.opacity = '0';
+
+          return gsapFade(nextContainer, 0, 1, ANIMATION_DURATIONS.fadeIn, 'power2.inOut', initializeDropdown);
+        },
       },
       {
         name: 'home-to-any',
         from: { namespace: ['home'] },
         to: { namespace: ['post', 'default'] },
-        
+  
         leave(data) {
-
           return overlayEnter().then(() => {
             data.current.container.style.display = 'none';
           });
@@ -414,52 +385,81 @@ document.addEventListener('DOMContentLoaded', () => {
           const nextContainer = data.next.container.querySelector('.content-wrapper');
           nextContainer.style.opacity = '0';
           nextContainer.style.display = 'block';
-          initializeDropdown();
-          const overlayLeavePromise = overlayLeave();
-          const fadeInPromise = new Promise((resolve) => {
-            setTimeout(() => {
-              fadeIn(nextContainer);
-              resolve();
-            }, ANIMATION_DURATIONS.fadeOverlap);
+          if (data.next.namespace === 'post') {
+            initializeDropdown();
+          }
+          const timeline = gsap.timeline();
+          timeline.add(overlayLeave()); // Overlay animation
+          timeline.to(nextContainer, {
+            opacity: 1,
+            duration: ANIMATION_DURATIONS.overlayEnter * 2, // Match duration
+            ease: 'power2.inOut',
           });
-          return Promise.all([overlayLeavePromise, fadeInPromise]);
-        }
+  
+          return timeline.finished;
+        },
       },
       {
         name: 'any-to-home',
         from: { namespace: ['post', 'default'] },
         to: { namespace: ['home'] },
-        
+  
         leave(data) {
           return overlayEnter().then(() => {
             data.current.container.style.display = 'none';
           });
         },
-      
-        enter(data) { // Fade in the new content 
-          const newContainer = document.querySelector('.fadein');
-          newContainer.style.opacity = 0; 
-          return Promise.all([ 
-            overlayLeave(), 
-            anime({ 
-              targets: newContainer, 
-              opacity: [0, 1],
-              duration: ANIMATION_DURATIONS.loadingContentFadeIn, 
-              easing: 'easeInOutQuad' 
-            }).finished 
-          ]).then(() => {
-            initializeVideo();
+  
+        enter(data) {
+          const homeContainer = data.next.container;
+          
+          // Set initial state
+          gsap.set(homeContainer, { opacity: 0 }); // Ensure it's visible but transparent
+          
+          // Create promises for both animations
+          const overlayLeavePromise = overlayLeave();
+          const fadeInPromise = gsap.to(homeContainer, {
+            opacity: 1,
+            duration: ANIMATION_DURATIONS.fadeIn * 2,
+            ease: 'power2.inOut',
+          }).then();
+        
+          // Run both animations at the same time
+          return Promise.all([overlayLeavePromise, fadeInPromise]);
+        },
+      },
+      {
+        name: 'post-to-default',
+        from: { namespace: ['post'] },
+        to: { namespace: ['default'] },
+  
+        leave(data) {
+          closeDropdown();
+  
+          return overlayEnter().then(() => {
+            data.current.container.style.display = 'none';
           });
-        }
-      }      
+        },
+  
+        enter(data) {
+          const nextContainer = data.next.container.querySelector('.content-wrapper');
+  
+          nextContainer.style.opacity = '0';
+          nextContainer.style.display = 'block';
+  
+          const overlayLeavePromise = overlayLeave();
+          const fadeInPromise = new Promise((resolve) => {
+            gsap.to(nextContainer, {
+              opacity: 1,
+              duration: ANIMATION_DURATIONS.overlayEnter * 2,
+              ease: 'power2.inOut',
+              onComplete: resolve,
+            });
+          });
+  
+          return Promise.all([overlayLeavePromise, fadeInPromise]);
+        },
+      },
     ],
   });
-
-
-
-
-  
-
-
-  
 });
