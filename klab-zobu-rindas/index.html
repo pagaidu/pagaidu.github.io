@@ -33,30 +33,67 @@
     <script defer src="/assets/js/barba.min.js"></script>
     <script defer src="/assets/js/gsap.min.js"></script>
     <script defer src="/assets/js/preloader.js"></script>
+
+
+        <style>
+      .loading-overlay { 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+  background: $page-color;
+  z-index: 1000;
+  font-family: $font-family--serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+        visibility: visible;
+      }
+
+      .no-js .content-wrapper { 
+        opacity: 1 !important; 
+        visibility: visible !important; 
+      }
+
+
+
+    </style>
+
+
+
+
     <noscript>
       <style>
-        .fadein { opacity: 1 !important; visibility: visible !important; }
+        .no-js .loading-overlay { display: none; }
         .content-wrapper { opacity: 1 !important; visibility: visible !important; }
         .dropdown-toggle.js-only { display: none; }
-        .is-hidden { opacity: 1 !important; visibility: visible !important; }
       </style>
       <p>Versija bez JavaScript.</p>
     </noscript>
+
   </head>
   <body data-barba="wrapper">
-    <div class="loading-overlay">
-      <div class="loading-circle">
-        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-          <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-          <path class="circle-progress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-        </svg>
-      </div>
-      <div class="loading-text">Pagaidi</div>
-        <div class="fallback-message" style="display: none;">
-          Ielāde rit neraksturīgi ilgi.
-          <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      document.write(`
+        <div class="loading-overlay">
+          <div class="loading-circle">
+            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path class="circle-progress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+          </div>
+          <div class="loading-text">Pagaidi</div>
+          <div class="fallback-message" style="display: none;">
+            Ielāde rit neraksturīgi ilgi.
+            <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
+          </div>
         </div>
-    </div>
+      `);
+    </script>
       
 
 
@@ -297,7 +334,7 @@ ceļa zīme “Apstāties aizliegts”.</p>
         <ul>
             <li><a href="/" class="footer-link" data-page="sakums">Sākums</a></li>
             
-            <li><a href="/atbalsts/" class="footer-link" data-page="atbalsts">Atbalsts</a></li>
+            <li><a href="/atsauksme/" class="footer-link" data-page="atbalsts">Atsauksme</a></li>
         </ul>        
         <p>Saturs aizsargāts saskaņā ar <a class="nowrap license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener">CC BY-NC-SA 4.0</a>.</p>
     </div>

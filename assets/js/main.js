@@ -1,8 +1,8 @@
 const ANIMATION_DURATIONS = {
   overlayEnter: 0.8,
   overlayLeave: 0.8,
-  fadeIn: 0.8,
-  fadeOut: 0.8,
+  fadeIn: 0.4,
+  fadeOut: 1,
   loadingContentFadeIn: 1.6,
   preloaderFadeOut: 0.8,
   contentReveal: 0.8
@@ -87,12 +87,46 @@ function setActiveLink() {
   classesToAdd.forEach(link => link.classList.add('active'));
 }
 
-function initializeVideo() { 
+function initializeVideo() {
   const video = document.getElementById('front__cover-video');
-   if (video) { 
-    video.play(); 
-    } 
+  if (!video) return;
+
+  // Force video play
+  function forcePlay() {
+    const playPromise = video.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn('Video autoplay was prevented:', error);
+        // Try playing again after user interaction
+        document.addEventListener('touchstart', () => {
+          video.play();
+        }, { once: true });
+      });
+    }
   }
+
+  // Watch for visibility changes
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        forcePlay();
+      }
+    });
+  }, { threshold: 0.1 });
+
+  observer.observe(video);
+
+  // Handle page visibility changes
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      forcePlay();
+    }
+  });
+
+  // Initial play
+  forcePlay();
+}
 
 function initializeDropdown() {
   seamless.polyfill();
@@ -411,11 +445,25 @@ document.addEventListener('DOMContentLoaded', () => {
         },
   
         enter(data) {
+
+
           const homeContainer = data.next.container;
           
           // Set initial state
           gsap.set(homeContainer, { opacity: 0 }); // Ensure it's visible but transparent
           
+  // Remove the video and reinsert it to force re-render
+  const videoContainer = homeContainer.querySelector('#front__cover-video');
+  if (videoContainer) {
+    const parent = videoContainer.parentNode;
+    const placeholder = document.createElement('div');
+    parent.replaceChild(placeholder, videoContainer);
+    parent.replaceChild(videoContainer, placeholder);
+  }
+  
+  initializeVideo(); // Reinitialize video after reinsertion
+
+
           // Create promises for both animations
           const overlayLeavePromise = overlayLeave();
           const fadeInPromise = gsap.to(homeContainer, {
@@ -427,10 +475,11 @@ document.addEventListener('DOMContentLoaded', () => {
           // Run both animations at the same time
           return Promise.all([overlayLeavePromise, fadeInPromise]);
         },
+        
       },
       {
         name: 'post-to-default',
-        from: { namespace: ['post'] },
+        from: { namespace: ['post', 'default'] },
         to: { namespace: ['default'] },
   
         leave(data) {
