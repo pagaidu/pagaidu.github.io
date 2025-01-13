@@ -32,9 +32,6 @@
     <script defer src="/assets/js/seamless-scroll-polyfill.js"></script>
     <script defer src="/assets/js/barba.min.js"></script>
     <script defer src="/assets/js/gsap.min.js"></script>
-    <script defer src="/assets/js/preloader.js"></script>
-
-
         <style>
       .loading-overlay { 
   position: fixed;
@@ -98,11 +95,13 @@
  
             <div class="column front">
                 <header class="front__cover">
-                    <video id="front__cover-video" muted="muted" autoplay playsinline loop preload="metadata" poster="/assets/images/pagaidu-book-cover.jpg">
-                        <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4"></source>
-                        <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm"></source>
-                        <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg"></source>
+
+<video id="front__cover-video" muted="muted" autoplay playsinline loop preload="auto" poster="/assets/images/pagaidu-book-cover.jpg">
+                        <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4">
+                        <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm">
+                        <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg">
                       </video>
+
                     <span class="front__cover-heading">Pagaidu</span>
                     <span class="front__cover-publisher">www</span>
                 </header>
@@ -123,12 +122,9 @@
                         <br><br> 
                         <div class="front__digital">
                             <p class="front__descr-short">
-                                Saturs kārtots alfabētiski pēc virsraksta vai teksta pirmā burta. <span class="color-indigo-300 bg-page-color">Pelēcīgajā indigo</span> ir ievadvārdi, kas tikai precizē kontekstu.
-                                <span class="line-through">Daži teksti ir klausāmi</span>
-                                <span class="tag audio">
-                                  <img src="/assets/images/tag-audio.svg" alt="audio teksts"/>
-                                </span>, 
-                                daži ir vairāku tekstu kopums 
+                                Saturs kārtots alfabētiski. <span class="color-indigo-300 bg-page-color">Pelēcīgajā indigo</span> ir ievad&shy;vārdi, kas tikai precizē kontekstu.
+                                
+                                Daži teksti ir vairāku tekstu kopums 
                                 <span class="tag multiple">
                                   <img src="/assets/images/tag-multiple.svg" alt="vairāki teksti"/>
                                 </span>.
@@ -270,10 +266,6 @@
                             <img src="/assets/images/tag-multiple.svg" alt="multiple texts"/>
                         </span>
                     
-                        <span class="tag audio">
-                            <img src="/assets/images/tag-audio.svg" alt="audible text"/>
-                        </span>
-                    
                 </span>
             
         </li>
@@ -311,7 +303,6 @@
     <div class="footer-container">
         <ul>
             <li><a href="/" class="footer-link" data-page="sakums">Sākums</a></li>
-            
             <li><a href="/atsauksme/" class="footer-link" data-page="atbalsts">Atsauksme</a></li>
         </ul>        
         <p>Saturs aizsargāts saskaņā ar <a class="nowrap license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener">CC BY-NC-SA 4.0</a>.</p>
