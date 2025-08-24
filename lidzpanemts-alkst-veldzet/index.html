@@ -6,7 +6,7 @@
     <title>Līdzpaņemts alkst veldzēt&nbsp;·&nbsp;Pagaidu</title>
     <meta name="generator" content="Eleventy">
     <meta name="author" content="Pagaida">
-    <meta name="description" content="Uz lasītavu galdiem dzeramā ūdens pudeles. Uzmanība uz vistuvāko, kas tukša un ar pabalējušu, tomēr saredzamu nosaukumu Everest.">
+    <meta name="description" content="Vietne, kurā apkopoti īsi, viegli un ne tik viegli lasāmi teksti. Rakstīts latviešu valodas vārdā.">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#f4ebdb">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -22,8 +22,6 @@
     <meta property="og:description" content="Uz lasītavu galdiem dzeramā ūdens pudeles. Uzmanība uz vistuvāko, kas tukša un ar pabalējušu, tomēr saredzamu nosaukumu Everest.">
     <meta property="og:image" content="/assets/images/cover-og.jpg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:site" content="@_pagaidu">
-    <meta name="twitter:creator" content="@_pagaidu">
     <meta name="twitter:title" content="Līdzpaņemts alkst veldzēt&nbsp;·&nbsp;Pagaidu">
     <meta name="twitter:description" content="Uz lasītavu galdiem dzeramā ūdens pudeles. Uzmanība uz vistuvāko, kas tukša un ar pabalējušu, tomēr saredzamu nosaukumu Everest.">
     <meta name="twitter:image" content="/assets/images/cover-tw.jpg">
@@ -37,6 +35,33 @@
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   </head>
   <body data-barba="wrapper">
+    <!-- Preloader for initial page load -->
+    <div class="loading-overlay">
+      <div class="loading-container">
+        <div class="loader-wrapper">
+        <button class="button enter-site-btn" style="display: none; opacity: 0;">Apskatīt grāmatu</button>
+        <div class="circular-loader">
+          <svg viewBox="0 0 100 100">
+            <circle class="progress-background" cx="50" cy="50" r="45"></circle>
+            <circle class="progress-circle" cx="50" cy="50" r="45"></circle>
+          </svg>
+          <span class="loading-percentage">0%</span>
+        </div>
+        </div>
+        <div class="loading-text">Pagaidi</div>
+        <div class="fallback-message">
+          Ja lapa neielādējas, lūdzu, atspējojiet satura bloķētājus vai mēģiniet vēlāk.
+          <button class="disable-overlay-btn">Ienākt</button>
+        </div>
+      </div>
+    </div>
+    <!-- Noscript fallback to hide the preloader if JS is disabled -->
+    <noscript>
+      <style>
+        .loading-overlay { display: none; }
+      </style>
+    </noscript>
+
     <div class="fadein">
       
 
@@ -109,64 +134,43 @@
     id="dropdown-menu" class="dropdown-menu"
     >
         <li>
-            <a href="/autina-iesezas-sieva-un-virs/" class="content-entry ">
-                Autiņā iesēžas sieva un vīrs...
-            </a>
+            <a href="/prieksvards/" class="content-entry ">Priekšvārds</a>
         </li>
         <li>
-            <a href="/bite-durvis-uz-lodziju/" class="content-entry ">
-                Bite durvīs uz lodžiju...
-            </a>
+            <a href="/autina-iesezas-sieva-un-virs/" class="content-entry ">Autiņā iesēžas sieva un vīrs...</a>
         </li>
         <li>
-            <a href="/celas-migla/" class="content-entry ">
-                Ceļas migla...
-            </a>
+            <a href="/bite-durvis-uz-lodziju/" class="content-entry ">Bite durvīs uz lodžiju...</a>
         </li>
         <li>
-            <a href="/cela-sirds-draudzejas/" class="content-entry ">
-                Ceļā sirds draudzējas...
-            </a>
+            <a href="/celas-migla/" class="content-entry ">Ceļas migla...</a>
         </li>
         <li>
-            <a href="/epizode-103-serijas-eka/" class="content-entry ">
-                Epizode 103. sērijas ēkā
-            </a>
+            <a href="/cela-sirds-draudzejas/" class="content-entry ">Ceļā sirds draudzējas...</a>
         </li>
         <li>
-            <a href="/griezts-metals-skind/" class="content-entry ">
-                Griezts metāls šķind...
-            </a>
+            <a href="/epizode-103-serijas-eka/" class="content-entry ">Epizode 103. sērijas ēkā</a>
         </li>
         <li>
-            <a href="/iepirksanas-centrs/" class="content-entry ">
-                Iepirkšanās centrs...
-            </a>
+            <a href="/griezts-metals-skind/" class="content-entry ">Griezts metāls šķind...</a>
         </li>
         <li>
-            <a href="/izveleties/" class="content-entry ">
-                Izvēlēties
-            </a>
+            <a href="/iepirksanas-centrs/" class="content-entry ">Iepirkšanās centrs...</a>
         </li>
         <li>
-            <a href="/kapnes-pieder-jaunibai/" class="content-entry ">
-                Kāpnes pieder jaunībai...
-            </a>
+            <a href="/izveleties/" class="content-entry ">Izvēlēties</a>
         </li>
         <li>
-            <a href="/klab-zobu-rindas/" class="content-entry ">
-                Klab zobu rindas...
-            </a>
+            <a href="/kapnes-pieder-jaunibai/" class="content-entry ">Kāpnes pieder jaunībai...</a>
         </li>
         <li>
-            <a href="/lidzpanemts-alkst-veldzet/" class="content-entry active">
-                Līdzpaņemts alkst veldzēt...
-            </a>
+            <a href="/klab-zobu-rindas/" class="content-entry ">Klab zobu rindas...</a>
         </li>
         <li>
-            <a href="/maceklis-enas-puse/" class="content-entry ">
-                Māceklis ēnas pusē
-            </a>
+            <a href="/lidzpanemts-alkst-veldzet/" class="content-entry active">Līdzpaņemts alkst veldzēt...</a>
+        </li>
+        <li>
+            <a href="/maceklis-enas-puse/" class="content-entry ">Māceklis ēnas pusē</a>
                 <span class="tags-container">
                         <span class="tag multiple">
                             <img src="/assets/images/tag-multiple.svg" alt="multiple texts"/>
@@ -176,54 +180,34 @@
             
         </li>
         <li>
-            <a href="/mirdz-migla/" class="content-entry ">
-                Mirdz migla...
-            </a>
+            <a href="/mirdz-migla/" class="content-entry ">Mirdz migla...</a>
         </li>
         <li>
-            <a href="/musu-speja-lidinaties/" class="content-entry ">
-                Mušu spēja lidināties...
-            </a>
+            <a href="/musu-speja-lidinaties/" class="content-entry ">Mušu spēja lidināties...</a>
         </li>
         <li>
-            <a href="/nakts-dziluma-koku-vainagi/" class="content-entry ">
-                Nakts. Dziļumā koku vainagi...
-            </a>
+            <a href="/nakts-dziluma-koku-vainagi/" class="content-entry ">Nakts. Dziļumā koku vainagi...</a>
         </li>
         <li>
-            <a href="/nauda-nauda/" class="content-entry ">
-                nauda, nauda...
-            </a>
+            <a href="/nauda-nauda/" class="content-entry ">nauda, nauda...</a>
         </li>
         <li>
-            <a href="/pavasar/" class="content-entry ">
-                Pavasar...
-            </a>
+            <a href="/pavasar/" class="content-entry ">Pavasar...</a>
         </li>
         <li>
-            <a href="/paveris-logu-aizkarus-redzu/" class="content-entry ">
-                Pavēris logu aizkarus, redzu...
-            </a>
+            <a href="/paveris-logu-aizkarus-redzu/" class="content-entry ">Pavēris logu aizkarus, redzu...</a>
         </li>
         <li>
-            <a href="/piti-akcentam-vietam-sarkani/" class="content-entry ">
-                Pīti, akcentam vietām sarkani...
-            </a>
+            <a href="/piti-akcentam-vietam-sarkani/" class="content-entry ">Pīti, akcentam vietām sarkani...</a>
         </li>
         <li>
-            <a href="/puteklit-tevi-aizslaucis/" class="content-entry ">
-                Puteklīt, tevi aizslaucīs
-            </a>
+            <a href="/puteklit-tevi-aizslaucis/" class="content-entry ">Puteklīt, tevi aizslaucīs</a>
         </li>
         <li>
-            <a href="/rudens-toni-gan-kokos-gan/" class="content-entry ">
-                Rudens toņi gan kokos, gan...
-            </a>
+            <a href="/rudens-toni-gan-kokos-gan/" class="content-entry ">Rudens toņi gan kokos, gan...</a>
         </li>
         <li>
-            <a href="/saknes-iestigusas-kajas/" class="content-entry ">
-                saknēs iestigušas kājas...
-            </a>
+            <a href="/saknes-iestigusas-kajas/" class="content-entry ">saknēs iestigušas kājas...</a>
                 <span class="tags-container">
                         <span class="tag multiple">
                             <img src="/assets/images/tag-multiple.svg" alt="multiple texts"/>
@@ -237,29 +221,19 @@
             
         </li>
         <li>
-            <a href="/skatos-pasaule/" class="content-entry ">
-                Skatos, pasaule...
-            </a>
+            <a href="/skatos-pasaule/" class="content-entry ">Skatos, pasaule...</a>
         </li>
         <li>
-            <a href="/salkas/" class="content-entry ">
-                Šalkas
-            </a>
+            <a href="/salkas/" class="content-entry ">Šalkas</a>
         </li>
         <li>
-            <a href="/tikai-neskaudi/" class="content-entry ">
-                Tikai nešķaudi
-            </a>
+            <a href="/tikai-neskaudi/" class="content-entry ">Tikai nešķaudi</a>
         </li>
         <li>
-            <a href="/tudal-biezokni-patverusas/" class="content-entry ">
-                Tūdaļ, biezoknī patvērušās...
-            </a>
+            <a href="/tudal-biezokni-patverusas/" class="content-entry ">Tūdaļ, biezoknī patvērušās...</a>
         </li>
         <li>
-            <a href="/uzmetu-kuleni-vecmammas/" class="content-entry ">
-                Uzmetu kūleni vecmammas...
-            </a>
+            <a href="/uzmetu-kuleni-vecmammas/" class="content-entry ">Uzmetu kūleni vecmammas...</a>
         </li>    
 </ol>
 

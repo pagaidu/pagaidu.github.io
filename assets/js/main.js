@@ -420,16 +420,151 @@ function resetScrollPosition() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Remove preloader logic and ensure content is visible
-    const contentContainer = document.querySelector('.content-wrapper') || document.querySelector('.fadein');
-    if (contentContainer) {
-        contentContainer.style.opacity = '';
-        contentContainer.style.visibility = '';
-    }
+    const contentContainer = document.querySelector('.fadein');
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    
+    // Guard against cases where the preloader isn't present
+    if (loadingOverlay && contentContainer) {
+        const percentageEl = loadingOverlay.querySelector('.loading-percentage');
+        const progressCircle = loadingOverlay.querySelector('.progress-circle');
+        const fallbackMessage = loadingOverlay.querySelector('.fallback-message');
+        const enterSiteBtn = loadingOverlay.querySelector('.enter-site-btn');
+        const disableBtn = loadingOverlay.querySelector('.disable-overlay-btn');
+        const loadingTextEl = loadingOverlay.querySelector('.loading-text');
+        const progressBackground = loadingOverlay.querySelector('.progress-background');
 
-    // Clean up any leftover overlay element if present
-    const strayOverlay = document.querySelector('.loading-overlay');
-    if (strayOverlay) strayOverlay.remove();
+        const radius = progressCircle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+        progressCircle.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const offset = circumference - (percent / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+            percentageEl.textContent = `${Math.round(percent)}%`;
+        }
+
+        function onLoadingFinished() {
+            clearTimeout(fallbackTimeout); // Cancel fallback timer
+
+            const exitTl = gsap.timeline();
+            // 1. Animate the progress circle stroke backwards to "unwind" it
+            exitTl.to(progressCircle, {
+                strokeDashoffset: circumference,
+                opacity: 0, // Fade out the circle to hide the "dot"
+                duration: 0.8,
+                ease: 'power2.inOut',
+            });
+            // 2. Simultaneously fade out the percentage, background, and initial text
+            exitTl.to([percentageEl, progressBackground, loadingTextEl], {
+                opacity: 0,
+                duration: 0.4,
+                ease: 'power1.in',
+            }, "<");
+            // 3. Change text and prepare for reveal
+            exitTl.call(() => {
+                loadingTextEl.textContent = 'Gatavs lasīšanai!';
+                enterSiteBtn.style.display = 'block';
+            });
+            // 4. Reveal the new title and the button
+            exitTl.fromTo([enterSiteBtn, loadingTextEl], {
+                opacity: 0,
+                y: 20,
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                stagger: 0.1,
+            }, ">-0.2");
+        }
+
+        function revealSite() {
+            const tl = gsap.timeline();
+            // 1. Animate the button and final title out
+            tl.to([enterSiteBtn, loadingTextEl], {
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power2.in',
+                stagger: 0.1,
+            });
+            // 2. Then, animate the entire overlay out
+            tl.to(loadingOverlay, {
+                x: '100%',
+                duration: ANIMATION_DURATIONS.overlayLeave,
+                ease: ANIMATION_EASES.overlayLeave,
+                onComplete: () => loadingOverlay.remove(),
+            });
+            // 3. Fade in the content
+            tl.to(contentContainer, {
+                opacity: 1,
+                visibility: 'visible',
+                duration: ANIMATION_DURATIONS.overlayLeave,
+                ease: 'power1.inOut',
+            }, "<");
+        }
+
+        // --- Real Asset Loading Logic ---
+        const images = Array.from(document.images);
+        const homeVideo = document.querySelector('.front__cover-video');
+        const totalAssets = images.length + (homeVideo ? 1 : 0);
+        let loadedAssets = 0;
+
+        function assetLoaded() {
+            loadedAssets++;
+            const percent = (loadedAssets / totalAssets) * 100;
+            setProgress(percent);
+            if (loadedAssets === totalAssets) {
+                // Use a short timeout to ensure 100% is visible briefly
+                setTimeout(onLoadingFinished, 250);
+            }
+        }
+
+        // Always try to load and cache the homepage video, even if we're not on homepage
+        if (homeVideo) {
+            // Create a promise that resolves when video can play through
+            new Promise((resolve) => {
+                if (homeVideo.readyState >= 3) {
+                    resolve();
+                } else {
+                    homeVideo.addEventListener('canplaythrough', resolve, { once: true });
+                    homeVideo.addEventListener('error', resolve, { once: true });
+                    // Force video load
+                    homeVideo.load();
+                }
+            }).then(assetLoaded);
+        }
+
+        if (totalAssets === 0) {
+            // If no assets, finish immediately
+            setProgress(100);
+            setTimeout(onLoadingFinished, 250);
+        } else {
+            images.forEach(img => {
+                // If image is cached and complete, count it immediately
+                if (img.complete && img.naturalHeight !== 0) {
+                    assetLoaded();
+                } else {
+                    // Otherwise, add listeners
+                    img.addEventListener('load', () => assetLoaded(), { once: true });
+                    img.addEventListener('error', () => assetLoaded(), { once: true }); // Count errors to avoid getting stuck
+                }
+            });
+        }
+
+        // Fallback for slow connections or errors
+        const fallbackTimeout = setTimeout(() => {
+            fallbackMessage.style.display = 'flex'; // Use flex to enable correct layout
+            gsap.to(fallbackMessage, { opacity: 1, duration: 0.5 });
+        }, 8000); // Show after 8 seconds
+
+        // Add listeners for the buttons
+        enterSiteBtn.addEventListener('click', revealSite);
+        disableBtn.addEventListener('click', () => {
+            clearTimeout(fallbackTimeout);
+            revealSite();
+        });
+    }
 
     // Initialize video if on the homepage on initial load
     if (document.querySelector('[data-barba-namespace="home"]')) {
