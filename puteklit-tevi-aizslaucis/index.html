@@ -29,72 +29,23 @@
     <meta name="twitter:image" content="/assets/images/cover-tw.jpg">
     <link rel="preload" href="/assets/css/styles.css" as="style">
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
     <script defer src="/assets/js/seamless-scroll-polyfill.js"></script>
     <script defer src="/assets/js/barba.min.js"></script>
-    <script defer src="/assets/js/gsap.min.js"></script>
-        <style>
-      .loading-overlay { 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  will-change: transform, opacity;
-  background: $page-color;
-  z-index: 1000;
-  font-family: $font-family--serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-        visibility: visible;
-      }
-
-      .no-js .content-wrapper { 
-        opacity: 1 !important; 
-        visibility: visible !important; 
-      }
-
-
-
-    </style>
-
-
-
-
-    <noscript>
-      <style>
-        .no-js .loading-overlay { display: none; }
-        .content-wrapper { opacity: 1 !important; visibility: visible !important; }
-        .dropdown-toggle.js-only { display: none; }
-      </style>
-      <p>Versija bez JavaScript.</p>
-    </noscript>
-
+    <script defer src="/assets/js/anime.min.js"></script>
+    <!-- GSAP is required for transitions in main.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   </head>
   <body data-barba="wrapper">
-    <script>
-      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
-      document.write(`
-        <div class="loading-overlay">
-          <div class="loading-circle">
-            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path class="circle-progress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-          </div>
-          <div class="loading-text">Pagaidi</div>
-          <div class="fallback-message" style="display: none;">
-            Ielāde rit neraksturīgi ilgi.
-            <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
-          </div>
-        </div>
-      `);
-    </script>
+    <div class="fadein">
       
 
 
-<div data-barba="container" class="container" data-barba-namespace="post">
+<div data-barba="container" 
+     class="container" 
+     data-barba-namespace="post"
+     data-prev-url="/piti-akcentam-vietam-sarkani/"
+     data-next-url="/rudens-toni-gan-kokos-gan/">
     <main data-barba="content" class="post">
       <article class="post__article story"> 
         <div class="content-wrapper">
@@ -275,6 +226,10 @@
                             <img src="/assets/images/tag-multiple.svg" alt="multiple texts"/>
                         </span>
                     
+                        <span class="tag audio">
+                            <img src="/assets/images/tag-audio.svg" alt="audible text"/>
+                        </span>
+                    
                 </span>
             
         </li>
@@ -315,11 +270,14 @@
     <div class="footer-container">
         <ul>
             <li><a href="/" class="footer-link" data-page="sakums">Sākums</a></li>
-            <li><a href="/atsauksme/" class="footer-link" data-page="atbalsts">Atsauksme</a></li>
+            
+            <li><a href="/atsauksme/" class="footer-link" data-page="atsauksme">Atsauksme</a></li>
         </ul>        
         <p>Saturs aizsargāts saskaņā ar <a class="nowrap license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener">CC BY-NC-SA 4.0</a>.</p>
     </div>
 </footer>
+ 
+    </div>
     <script defer src="/assets/js/main.js"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43fc4571eca348319c6158023797ce28"}'></script>
   </body>

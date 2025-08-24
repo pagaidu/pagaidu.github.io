@@ -29,79 +29,24 @@
     <meta name="twitter:image" content="/assets/images/cover-tw.jpg">
     <link rel="preload" href="/assets/css/styles.css" as="style">
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
     <script defer src="/assets/js/seamless-scroll-polyfill.js"></script>
     <script defer src="/assets/js/barba.min.js"></script>
-    <script defer src="/assets/js/gsap.min.js"></script>
-        <style>
-      .loading-overlay { 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  will-change: transform, opacity;
-  background: $page-color;
-  z-index: 1000;
-  font-family: $font-family--serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-        visibility: visible;
-      }
-
-      .no-js .content-wrapper { 
-        opacity: 1 !important; 
-        visibility: visible !important; 
-      }
-
-
-
-    </style>
-
-
-
-
-    <noscript>
-      <style>
-        .no-js .loading-overlay { display: none; }
-        .content-wrapper { opacity: 1 !important; visibility: visible !important; }
-        .dropdown-toggle.js-only { display: none; }
-      </style>
-      <p>Versija bez JavaScript.</p>
-    </noscript>
-
+    <script defer src="/assets/js/anime.min.js"></script>
+    <!-- GSAP is required for transitions in main.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   </head>
   <body data-barba="wrapper">
-    <script>
-      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
-      document.write(`
-        <div class="loading-overlay">
-          <div class="loading-circle">
-            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-              <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path class="circle-progress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-          </div>
-          <div class="loading-text">Pagaidi</div>
-          <div class="fallback-message" style="display: none;">
-            Ielāde rit neraksturīgi ilgi.
-            <a href="#" class="disable-overlay">Apmeklē vietni, kaut tā nav pilnībā ielādējusies.</a>
-          </div>
-        </div>
-      `);
-    </script>
+    <div class="fadein">
               <div data-barba="container" data-barba-namespace="home" class="row">
- 
             <div class="column front">
                 <header class="front__cover">
-
-<video id="front__cover-video" muted="muted" autoplay playsinline loop preload="auto" poster="/assets/images/pagaidu-book-cover.jpg">
-                        <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4">
-                        <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm">
-                        <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg">
+                    <video class="front__cover-video" muted="muted" autoplay playsinline loop preload="auto" poster="/assets/images/pagaidu-book-cover.jpg">
+                        <source src="/assets/images/pagaidu-book-cover.mp4" type="video/mp4"></source>
+                        <source src="/assets/images/pagaidu-book-cover.webm" type="video/webm"></source>
+                        <source src="/assets/images/pagaidu-book-cover.ogv" type="video/ogg"></source>
                       </video>
-
+                      
                     <span class="front__cover-heading">Pagaidu</span>
                     <span class="front__cover-publisher">www</span>
                 </header>
@@ -114,23 +59,35 @@
                             Klusās ainavas aicina lasītāju pazust starp rindām, ļaujot atrast sevi nepateiktajā. Bez steigas, bez moralizēšanas, <em>Pagaidu</em> ved lasītāju cauri pārdomām par to, ko nozīmē gaidīt un dzīvot laikā, kad šķiet, ka viss būtu apstājies, tomēr dzīve turpina ritēt, kaut citādi.
                         </p>
                         <br>
-                        <span class="front__descr-kas">
-                            <strong>Autors:</strong> Artis Riekstiņš<br/>
-                            <strong>Sastādījis:</strong> Dzīves maģiskums<br/>
-                            <strong>Izdevējs:</strong> WWW tīmeklis
+                        <span>
+                            Autors Pagaida<br/>
+                            Sastādījis dzīves maģiskums<br/>
+                            Izdevējs WWW tīmeklis
                         </span>
                         <br><br> 
                         <div class="front__digital">
                             <p class="front__descr-short">
-                                Saturs kārtots alfabētiski. <span class="color-indigo-300 bg-page-color">Pelēcīgajā indigo</span> ir ievad&shy;vārdi, kas tikai precizē kontekstu.
+                                Saturs kārtots alfabētiski pēc virsraksta vai teksta pirmā burta. Atsevišķiem tekstiem ir ievadvārdi, kuriem ir tikai paskaidrojoša nozīme.
                                 
+                                </p>
+                                <p class="front__descr-short">
+
                                 Daži teksti ir vairāku tekstu kopums 
                                 <span class="tag multiple">
                                   <img src="/assets/images/tag-multiple.svg" alt="vairāki teksti"/>
                                 </span>.
-
+                                Doma par audio papildinājumu
+                                <span class="tag audio">
+                                  <img src="/assets/images/tag-audio.svg" alt="vairāki teksti"/>
+                                </span>
+                                nav realizēta.
+</p><p class="front__descr-short">
+                                Mobilajās ierīcēs teksti šķirstāmi ar pieskārienu uz labo un kreiso pusi.
+                                Datoriem ar tastatūru teksti šķirstāmi ar taustiņiem <strong>→ (pa labi)</strong> un ← <strong>(pa kreisi)</strong>. Tekstu šķirklis atverams ar taustiņiem <strong>I</strong> vai <strong>M</strong>.</p>
                                 
+                                <p class="front__descr-short">
                                 Iespēja sniegt
+                                
                                 <a href="/atsauksme">atsauksmi</a>.</p>
                         </div>
                 </main>
@@ -266,6 +223,10 @@
                             <img src="/assets/images/tag-multiple.svg" alt="multiple texts"/>
                         </span>
                     
+                        <span class="tag audio">
+                            <img src="/assets/images/tag-audio.svg" alt="audible text"/>
+                        </span>
+                    
                 </span>
             
         </li>
@@ -298,16 +259,18 @@
 
                 </div>
             </nav>
-        </div>
-<footer class="footer index">
+        </div><footer class="footer index">
     <div class="footer-container">
         <ul>
             <li><a href="/" class="footer-link" data-page="sakums">Sākums</a></li>
-            <li><a href="/atsauksme/" class="footer-link" data-page="atbalsts">Atsauksme</a></li>
+            
+            <li><a href="/atsauksme/" class="footer-link" data-page="atsauksme">Atsauksme</a></li>
         </ul>        
         <p>Saturs aizsargāts saskaņā ar <a class="nowrap license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener">CC BY-NC-SA 4.0</a>.</p>
     </div>
 </footer>
+ 
+    </div>
     <script defer src="/assets/js/main.js"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43fc4571eca348319c6158023797ce28"}'></script>
   </body>

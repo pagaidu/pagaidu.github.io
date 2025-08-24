@@ -1,15 +1,216 @@
 const ANIMATION_DURATIONS = {
-    overlayEnter: .7,
-    overlayLeave: .7,
-    fadeIn: 0.2,
-    fadeOut: .7,
+    overlayEnter: 700,
+    overlayLeave: 700,
+    fadeIn: 800,
+    fadeOut: 800,
+    loadingFadeOut: 700,
+    fadeOverlap: 300,
+    loadingContentFadeIn: 1600,
+    loadingContentSlide: 700
 };
+
 const ANIMATION_EASES = {
     overlayEnter: 'power1.in',
     overlayLeave: 'power2.out',
     fadeIn: 'power2.in',
     fadeOut: 'sine.out'
 };
+
+class LoadingManager {
+    constructor() {
+      this.loadingProgress = 0;
+      this.targetProgress = 0;
+      this.animationFrameId = null;
+      this.isComplete = false;
+      this.isLoadFinished = false;
+      this.startTime = Date.now();
+      this.minLoadTime = 2000; // Minimum 2 seconds display time
+  
+      this.circle = null;
+      this.percentageElement = null;
+      this.circumference = 2 * Math.PI * 50; // radius = 50
+      
+      this.overlay = document.querySelector('.loading-overlay');
+      if (!this.overlay) return; 
+  
+      this.circle = this.overlay.querySelector('.progress-circle');
+      this.percentageElement = this.overlay.querySelector('.loading-percentage');
+      
+      this.startProgressSimulation();
+      this.setupEventListeners();
+    }
+  
+    updateProgress(percentage) {
+      this.loadingProgress = Math.min(percentage, 100);
+      if (this.percentageElement) {
+          this.percentageElement.textContent = `${Math.floor(this.loadingProgress)}%`;
+      }
+      if (this.circle) {
+          const offset = this.circumference - (this.loadingProgress / 100) * this.circumference;
+          this.circle.style.strokeDashoffset = offset;
+      }
+    }
+  
+    startProgressSimulation() {
+      let lastTargetUpdateTime = 0;
+  
+      const animate = (timestamp) => {
+        if (this.isComplete) return;
+  
+        if (!this.isLoadFinished && timestamp - lastTargetUpdateTime > 150) {
+          lastTargetUpdateTime = timestamp;
+          if (this.targetProgress < 99) {
+            let increment;
+            if (this.targetProgress < 30) increment = Math.random() * 10 + 5;
+            else if (this.targetProgress < 70) increment = Math.random() * 8 + 3;
+            else if (this.targetProgress < 90) increment = Math.random() * 4 + 1;
+            else increment = Math.random() * 2 + 0.5;
+            this.targetProgress = Math.min(this.targetProgress + increment, 99);
+          }
+        }
+  
+        const diff = this.targetProgress - this.loadingProgress;
+        if (Math.abs(diff) > 0.1) {
+          const easingFactor = this.isLoadFinished ? 0.3 : 0.1;
+          const step = diff * easingFactor;
+          this.updateProgress(this.loadingProgress + step);
+        } else if (this.isLoadFinished) {
+          this.complete();
+        } else {
+          if (this.loadingProgress !== this.targetProgress) {
+              this.updateProgress(this.targetProgress);
+          }
+        }
+  
+        this.animationFrameId = requestAnimationFrame(animate);
+      };
+  
+      this.animationFrameId = requestAnimationFrame(animate);
+    }
+  
+    stopProgressSimulation() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+    }
+  
+    setupEventListeners() {
+      setTimeout(() => {
+        if (!this.isComplete) this.showFallbackMessage();
+      }, 8000);
+  
+      this.overlay.addEventListener('click', (e) => {
+        if (e.target.classList.contains('disable-overlay-btn')) {
+          e.preventDefault();
+          this.forceComplete();
+        }
+      });
+  
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) this.stopProgressSimulation();
+        else if (!this.isComplete) this.startProgressSimulation();
+      });
+    }
+  
+    showFallbackMessage() {
+      const fallbackMessage = this.overlay.querySelector('.fallback-message');
+      if (fallbackMessage) fallbackMessage.style.display = 'block';
+    }
+  
+    async complete() {
+      if (this.isComplete) return;
+      this.isComplete = true;
+      this.stopProgressSimulation();
+  
+      await anime({
+        targets: this,
+        loadingProgress: 100,
+        duration: 400,
+        easing: 'easeInOutQuad',
+        update: () => this.updateProgress(this.loadingProgress)
+      }).finished;
+  
+      const elapsedTime = Date.now() - this.startTime;
+      const remainingTime = this.minLoadTime - elapsedTime;
+      if (remainingTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+      }
+  
+      this.finishLoading();
+    }
+  
+    async finishLoading() {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      closeDropdown();
+      
+      await anime({
+        targets: this.overlay.querySelector('.loading-container'),
+        opacity: [1, 0],
+        duration: ANIMATION_DURATIONS.loadingFadeOut,
+        easing: 'easeInOutQuad'
+      }).finished;
+  
+      const contentContainer = document.querySelector('.content-wrapper');
+      if (contentContainer) contentContainer.style.opacity = 0;
+      
+      await Promise.all([
+        anime({
+          targets: this.overlay,
+          translateX: ['0%', '100%'],
+          duration: ANIMATION_DURATIONS.loadingContentSlide,
+          easing: 'easeInOutQuad'
+        }).finished,
+        anime({
+          targets: contentContainer,
+          opacity: [0, 1],
+          duration: ANIMATION_DURATIONS.loadingContentFadeIn,
+          easing: 'easeInOutQuad'
+        }).finished
+      ]);
+      
+      this.remove();
+    }
+  
+    forceComplete() {
+      this.isComplete = true;
+      this.remove();
+    }
+  
+    remove() {
+      if (this.overlay && this.overlay.parentNode) {
+        this.overlay.remove();
+      }
+      this.stopProgressSimulation();
+    }
+  
+    pageLoadFinished() {
+      const elapsedTime = Date.now() - this.startTime;
+      const remainingTime = this.minLoadTime - elapsedTime;
+  
+      setTimeout(() => {
+        this.isLoadFinished = true;
+        this.targetProgress = 99;
+      }, Math.max(0, remainingTime));
+    }
+  }
+  
+  let loadingManager = null;
+  const preloaderKey = 'preloaderShown';
+  const isInitialVisit = !sessionStorage.getItem(preloaderKey);
+  
+  if (isInitialVisit) {
+    loadingManager = new LoadingManager();
+    window.addEventListener('load', () => {
+      if (loadingManager) {
+        loadingManager.pageLoadFinished();
+        sessionStorage.setItem(preloaderKey, 'true');
+      }
+    });
+  } else {
+      const loadingOverlay = document.querySelector('.loading-overlay');
+      if(loadingOverlay) loadingOverlay.remove();
+  }
 
 function updateHead(newPageRawHTML) {
     const head = document.head;
@@ -23,7 +224,7 @@ function updateHead(newPageRawHTML) {
         if (existingTag && newTag) {
             existingTag.setAttribute('content', newTag.getAttribute('content'))
         } else if (newTag) {
-            head.appendChild(newTag.cloneNode(!0))
+            head.appendChild(newTag.cloneNode(true))
         }
     })
 }
@@ -67,212 +268,12 @@ function setActiveLink() {
     classesToAdd.forEach(link => link.classList.add('active'))
 }
 
-/**
- * Handles keyboard shortcuts for the dropdown menu.
- * @param {KeyboardEvent} e The keyboard event.
- */
-function handleDropdownKeys(e) {
-    // Don't interfere if the user is typing in a form field.
-    const activeEl = document.activeElement;
-    const isTyping = activeEl && (['input', 'textarea'].includes(activeEl.tagName.toLowerCase()) || activeEl.isContentEditable);
-    if (isTyping) {
-        return;
-    }
-
-    const dropdownToggle = document.querySelector('.dropdown-toggle.js-only');
-    if (!dropdownToggle) {
-        return;
-    }
-
-    // Use 'i' or 'm' to toggle the menu.
-    if (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'm') {
-        e.preventDefault();
-        dropdownToggle.click();
-    }
-
-    // Use 'Escape' to close the menu if it's open.
-    if (e.key === 'Escape') {
-        if (dropdownToggle.getAttribute('aria-expanded') === 'true') {
-            e.preventDefault();
-            dropdownToggle.click(); // This will toggle it closed.
-        }
-    }
-}
-
-/**
- * Manages keyboard (arrow keys) and swipe navigation for post pages.
- */
-class PostNavigator {
-    constructor(container) {
-        this.prevUrl = container.dataset.prevUrl;
-        this.nextUrl = container.dataset.nextUrl;
-        this.touchStartX = 0;
-        this.touchEndX = 0;
-        this.isSwiping = false;
-
-        this.boundHandleKeyDown = this.handleKeyDown.bind(this);
-        this.boundHandleTouchStart = this.handleTouchStart.bind(this);
-        this.boundHandleTouchMove = this.handleTouchMove.bind(this);
-        this.boundHandleTouchEnd = this.handleTouchEnd.bind(this);
-
-        this.addEventListeners();
-    }
-
-    addEventListeners() {
-        document.addEventListener('keydown', this.boundHandleKeyDown);
-        document.addEventListener('touchstart', this.boundHandleTouchStart, { passive: true });
-        document.addEventListener('touchmove', this.boundHandleTouchMove, { passive: true });
-        document.addEventListener('touchend', this.boundHandleTouchEnd);
-    }
-
-    handleKeyDown(e) {
-        if (e.key === 'ArrowLeft' && this.prevUrl) {
-            barba.go(this.prevUrl);
-        } else if (e.key === 'ArrowRight' && this.nextUrl) {
-            barba.go(this.nextUrl);
-        }
-    }
-
-    handleTouchStart(e) {
-        this.touchStartX = e.touches[0].clientX;
-        this.isSwiping = true;
-    }
-
-    handleTouchMove(e) {
-        if (!this.isSwiping) return;
-        this.touchEndX = e.touches[0].clientX;
-    }
-
-    handleTouchEnd() {
-        if (!this.isSwiping) return;
-        
-        const swipeThreshold = 50; // Minimum pixels for a swipe
-        const distance = this.touchEndX - this.touchStartX;
-
-        if (Math.abs(distance) > swipeThreshold) {
-            if (distance > 0 && this.prevUrl) { // Swipe Right
-                barba.go(this.prevUrl);
-            } else if (distance < 0 && this.nextUrl) { // Swipe Left
-                barba.go(this.nextUrl);
-            }
-        }
-        
-        this.isSwiping = false;
-        this.touchStartX = 0;
-        this.touchEndX = 0;
-    }
-
-    destroy() {
-        document.removeEventListener('keydown', this.boundHandleKeyDown);
-        document.removeEventListener('touchstart', this.boundHandleTouchStart);
-        document.removeEventListener('touchmove', this.boundHandleTouchMove);
-        document.removeEventListener('touchend', this.boundHandleTouchEnd);
-    }
-}
-
-let postNavigator = null;
-
-/**
- * Manages the homepage video to ensure reliable autoplay,
- * handles browser visibility changes, and integrates with Barba.js lifecycle.
- */
-class VideoManager {
-    constructor() {
-        this.video = document.querySelector('.front__cover-video');
-        this.hasPlayedOnce = false;
-
-        if (!this.video) {
-             // This is now a normal case when not on the homepage, so no error needed.
-            return;
-        }
-
-        this.boundOnVisibilityChange = this.onVisibilityChange.bind(this);
-        this.boundAttemptPlay = this.attemptPlay.bind(this);
-
-        this.addEventListeners();
-        this.attemptPlay();
-    }
-
-    addEventListeners() {
-        document.addEventListener('visibilitychange', this.boundOnVisibilityChange);
-        // 'canplay' is a good event to trigger the first play attempt.
-        this.video.addEventListener('canplay', this.boundAttemptPlay, { once: true });
-    }
-
-    /**
-     * Attempts to play the video, handling the promise to catch autoplay errors.
-     */
-    async attemptPlay() {
-        if (!this.video || !this.video.paused) {
-            return; // Video doesn't exist or is already playing.
-        }
-
-        try {
-            // The video is loaded via the `ready` method or `onVisibilityChange`, so we just need to play.
-            await this.video.play();
-        } catch (error) {
-            // This is expected when autoplay is blocked by the browser.
-            console.warn("Video autoplay was prevented by the browser:", error.message);
-        }
-    }
-
-    /**
-     * Returns a promise that resolves when the video is ready to be played.
-     */
-    ready() {
-        return new Promise(resolve => {
-            if (this.video.readyState >= 3) { // HAVE_FUTURE_DATA state
-                resolve();
-            } else {
-                this.video.addEventListener('canplay', resolve, { once: true });
-            }
-            this.video.load(); // Trigger the load
-        });
-    }
-
-    /**
-     * Pauses the video when the tab is hidden and plays it when visible.
-     */
-    onVisibilityChange() {
-        if (!this.video) return;
-
-        if (document.visibilityState === 'visible') {
-            // When returning to a tab, mobile browsers can leave the video in a broken state.
-            // We need to be more forceful to ensure it recovers and plays correctly.
-            requestAnimationFrame(() => {
-                // Resetting currentTime can help fix rendering glitches on some browsers.
-                this.video.currentTime = 0;
-                // Calling load() is crucial for mobile browsers that discard video data.
-                this.video.load();
-                // Now, attempt to play.
-                this.attemptPlay();
-            });
-        } else {
-            // When tab is hidden, pause the video to save resources.
-            this.video.pause();
-        }
-    }
-
-    /**
-     * Cleans up event listeners to prevent memory leaks when navigating away.
-     */
-    destroy() {
-        if (this.video) {
-            this.video.pause();
-            this.video.removeEventListener('canplay', this.boundAttemptPlay);
-        }
-        document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
-    }
-}
-
-let videoManager = null;
-
 function initializeVideo() {
-        // Ensure any old manager is destroyed before creating a new one.
-    if (videoManager) {
-        videoManager.destroy();
-    }
-    videoManager = new VideoManager();
+    const video = document.getElementById('front__cover-video');
+    video.load();
+    video.addEventListener('canplay', () => {
+        video.play()
+    })
 }
 
 function initializeDropdown() {
@@ -318,7 +319,7 @@ function closeDropdown() {
     const dropdownCheckbox = document.getElementById('dropdown-checkbox');
     const dropdownToggle = document.querySelector('.dropdown-toggle');
     if (dropdownCheckbox && dropdownToggle) {
-        dropdownCheckbox.checked = !1;
+        dropdownCheckbox.checked = false;
         dropdownToggle.setAttribute('aria-expanded', 'false')
     }
     const dropdownWrapper = document.querySelector('.dropdown-wrapper');
@@ -384,29 +385,25 @@ function gsapFade(element, fromOpacity, toOpacity, duration, ease, onComplete) {
 }
 
 function resetScrollPosition() {
-    // Use 'auto' for an instant, invisible reset.
     window.scrollTo({
         top: 0,
-        behavior: 'auto'
+        behavior: 'smooth'
     })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Remove preloader logic and ensure content is visible
-    const contentContainer = document.querySelector('.content-wrapper') || document.querySelector('.fadein');
-    if (contentContainer) {
-        contentContainer.style.opacity = '';
-        contentContainer.style.visibility = '';
-    }
 
-    // Clean up any leftover overlay element if present
-    const strayOverlay = document.querySelector('.loading-overlay');
-    if (strayOverlay) strayOverlay.remove();
-
-    // Initialize video if on the homepage on initial load
-    if (document.querySelector('[data-barba-namespace="home"]')) {
-        initializeVideo();
-    }
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            if (window.location.pathname === '/') {
+                const video = document.getElementById('front__cover-video');
+                if (video) {
+                    video.load();
+                    video.play()
+                }
+            }
+        }
+    });
 
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual'
@@ -415,8 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
     barba.init({
         transitions: [{
             name: 'post-fade',
-            from: { namespace: ['post'] },
-            to:   { namespace: ['post'] },
+            from: {
+                namespace: ['post']
+            },
+            to: {
+                namespace: ['post']
+            },
             leave(data) {
                 closeDropdown();
                 const currentContainer = data.current.container.querySelector('.content-wrapper');
@@ -472,25 +473,14 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             enter(data) {
                 const homeContainer = data.next.container;
-                gsap.set(homeContainer, { opacity: 0 });
-
-                initializeVideo();
-
-                // First, wait for the video to be ready to play.
-                return videoManager.ready().then(() => {
-                    // Once ready, start playing the video.
-                    videoManager.attemptPlay();
-
-                    // Now, run the overlay leaving and the container fading in animations simultaneously.
-                    return Promise.all([
-                        overlayLeave(),
-                        gsap.to(homeContainer, {
-                            opacity: 1,
-                            duration: ANIMATION_DURATIONS.overlayLeave, // Match the overlay's duration
-                            ease: ANIMATION_EASES.overlayLeave,
-                        })
-                    ]);
+                gsap.set(homeContainer, {
+                    opacity: 0
                 });
+                return Promise.all([overlayLeave(), gsap.to(homeContainer, {
+                    opacity: 1,
+                    duration: ANIMATION_DURATIONS.overlayLeave,
+                    ease: ANIMATION_EASES.overlayLeave,
+                }), ])
             },
         }, {
             name: 'post-to-default',
@@ -553,63 +543,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     barba.hooks.beforeLeave(() => {});
 
-    // Fix: add data parameter to hook and guard next
     barba.hooks.leave((data) => {
-
-        if (data && data.next && ['post'].includes(data.next.namespace)) {
+        if (['post'].includes(data.next.namespace)) {
             closeDropdown()
         }
     });
 
-    barba.hooks.afterLeave((data) => {
+    barba.hooks.afterLeave(() => {
         const homeContainer = document.querySelector('[data-barba-namespace="home"]');
         if (homeContainer) {
             homeContainer.style.opacity = '';
             homeContainer.style.display = ''
         }
-        // Best practice: Reset scroll after the leave transition is complete.
-        resetScrollPosition();
-
-        // Clean up the video manager when leaving the homepage
-        if (data.current.namespace === 'home' && videoManager) {
-            videoManager.destroy();
-            videoManager = null;
-        }
-        // Clean up the post navigator when leaving a post
-        if (data.current.namespace === 'post' && postNavigator) {
-            postNavigator.destroy();
-            postNavigator = null;
-        }
-        // Clean up dropdown key listener when leaving relevant pages.
-        if (['post', 'default'].includes(data.current.namespace)) {
-            document.removeEventListener('keydown', handleDropdownKeys);
-        }
     });
 
     barba.hooks.beforeEnter((data) => {
-        // setTimeout(resetScrollPosition, 50); // This was causing the visible scroll.
-
         updateHead(data.next.html);
         updateFooter(data.next.html);
         updateFooterClass(data.next.namespace);
+        if (data.next.namespace === 'home') {
+            const video = document.getElementById('front__cover-video');
+            video.load();
+            video.play();
+            video.loop = true
+        }
     });
 
     barba.hooks.enter(() => {
+        setTimeout(resetScrollPosition, 50)
     });
 
     barba.hooks.afterEnter((data) => {
         if (['post', 'default'].includes(data.next.namespace)) {
-            setActiveLink();
-            // Add dropdown key listener on pages that have it.
-            document.addEventListener('keydown', handleDropdownKeys);
+            setActiveLink()
         }
-        // Initialize post navigation
-        if (data.next.namespace === 'post') {
-            postNavigator = new PostNavigator(data.next.container);
-        }
-        // Initialize video on initial load if not already handled by a transition.
-        if (data.next.namespace === 'home' && !videoManager) {
+        if (data.next.namespace === 'home') {
             initializeVideo();
+        }
+        if (data.next.namespace === 'post') {
+            initializeDropdown();
         }
     })
 })

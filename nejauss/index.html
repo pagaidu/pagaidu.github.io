@@ -13,11 +13,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="canonical" href="/404.html">
+    <link rel="canonical" href="/nejauss/">
     <meta property="og:site_name" content="Pagaidu">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="lv_LV">
-    <meta property="og:url" content="/404.html">
+    <meta property="og:url" content="/nejauss/">
     <meta property="og:title" content="Pagaidu">
     <meta property="og:description" content="">
     <meta property="og:image" content="/assets/images/cover-og.jpg">
@@ -49,16 +49,33 @@
     <main data-barba="content" class="post">
       <article class="post__article default"> 
         <div class="content-wrapper">
-            <h1>Lapa netika atrasta</h1>
-<h2>Kods 404</h2>
-<p class="note color-indigo-300 margin-bottom-zero">Negaidi, jo šeit meklētā nav.</p>
-<!---Atpakaļ uz <a href="/">sākumlapu</a>.--->
+            <script>
+  const comingFromPost = document.referrer; 
 
+  const allPosts = 
+    ["/epizode-103-serijas-eka/","/rudens-toni-gan-kokos-gan/","/nauda-nauda/","/mirdz-migla/","/skatos-pasaule/","/musu-speja-lidinaties/","/tudal-biezokni-patverusas/","/uzmetu-kuleni-vecmammas/","/tikai-neskaudi/","/salkas/","/saknes-iestigusas-kajas/","/piti-akcentam-vietam-sarkani/","/paveris-logu-aizkarus-redzu/","/pavasar/","/nakts-dziluma-koku-vainagi/","/maceklis-enas-puse/","/lidzpanemts-alkst-veldzet/","/kapnes-pieder-jaunibai/","/bite-durvis-uz-lodziju/","/cela-sirds-draudzejas/","/autina-iesezas-sieva-un-virs/","/izveleties/","/puteklit-tevi-aizslaucis/","/iepirksanas-centrs/","/klab-zobu-rindas/","/celas-migla/","/griezts-metals-skind/"];
+  
+  const allPostsFiltered = allPosts.filter(URLfilter);
+  
+  function URLfilter(value) {
+    return value !== comingFromPost;
+  }
+
+  function linkToRandomBlogPost() {
+      const randomPostLink = allPostsFiltered[Math.floor(Math.random() * allPostsFiltered.length)];
+      return randomPostLink;
+  }
+
+  location.replace(linkToRandomBlogPost())
+</script>
+
+<noscript>
+  <h2>JavaScript ir izslēgts!</h2>
+    <p>Izvēlēties tekstu nejauši var tikai ar JavaScript. </p><a href="/">Uz sākumlapu</a>
+</noscript>
             </div>
         </article>
     </main>
-    <nav class="notFound-nav">Doties <a class="font-weight-400" href="javascript:history.back()" onclick="if(!history.length) { this.href='/'; }">atpakaļ</a>.</nav>
-
 </div><footer class="footer ">
     <div class="footer-container">
         <ul>
