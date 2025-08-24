@@ -104,10 +104,20 @@ function handleDropdownKeys(e) {
  */
 class PostNavigator {
     constructor(container) {
+        this.swipeTarget = container.querySelector('.post'); // Target the main post content area
+        if (!this.swipeTarget) {
+            return; // Don't initialize if the target isn't found
+        }
+
         this.prevUrl = container.dataset.prevUrl;
         this.nextUrl = container.dataset.nextUrl;
+        
+        // Track both X and Y coordinates
         this.touchStartX = 0;
+        this.touchStartY = 0;
         this.touchEndX = 0;
+        this.touchEndY = 0;
+
         this.isSwiping = false;
 
         this.boundHandleKeyDown = this.handleKeyDown.bind(this);
@@ -119,10 +129,12 @@ class PostNavigator {
     }
 
     addEventListeners() {
+        // Keyboard events can remain global
         document.addEventListener('keydown', this.boundHandleKeyDown);
-        document.addEventListener('touchstart', this.boundHandleTouchStart, { passive: true });
-        document.addEventListener('touchmove', this.boundHandleTouchMove, { passive: true });
-        document.addEventListener('touchend', this.boundHandleTouchEnd);
+        // Touch events are now restricted to the swipeTarget element
+        this.swipeTarget.addEventListener('touchstart', this.boundHandleTouchStart, { passive: true });
+        this.swipeTarget.addEventListener('touchmove', this.boundHandleTouchMove, { passive: true });
+        this.swipeTarget.addEventListener('touchend', this.boundHandleTouchEnd);
     }
 
     handleKeyDown(e) {
@@ -134,39 +146,55 @@ class PostNavigator {
     }
 
     handleTouchStart(e) {
+        // Record both starting X and Y
         this.touchStartX = e.touches[0].clientX;
+        this.touchStartY = e.touches[0].clientY;
         this.isSwiping = true;
     }
 
     handleTouchMove(e) {
         if (!this.isSwiping) return;
+        // Record current X and Y
         this.touchEndX = e.touches[0].clientX;
+        this.touchEndY = e.touches[0].clientY;
     }
 
     handleTouchEnd() {
         if (!this.isSwiping) return;
         
-        const swipeThreshold = 50; // Minimum pixels for a swipe
-        const distance = this.touchEndX - this.touchStartX;
+        const swipeThreshold = 50; // Minimum horizontal distance for a swipe
+        const dx = this.touchEndX - this.touchStartX;
+        const dy = this.touchEndY - this.touchStartY;
 
-        if (Math.abs(distance) > swipeThreshold) {
-            if (distance > 0 && this.prevUrl) { // Swipe Right
-                barba.go(this.prevUrl);
-            } else if (distance < 0 && this.nextUrl) { // Swipe Left
-                barba.go(this.nextUrl);
+        // Only trigger a swipe if the horizontal movement is greater than the vertical movement.
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // And only if the horizontal movement exceeds the threshold.
+            if (Math.abs(dx) > swipeThreshold) {
+                if (dx > 0 && this.prevUrl) { // Swipe Right
+                    barba.go(this.prevUrl);
+                } else if (dx < 0 && this.nextUrl) { // Swipe Left
+                    barba.go(this.nextUrl);
+                }
             }
         }
         
+        // Reset all values for the next touch.
         this.isSwiping = false;
         this.touchStartX = 0;
+        this.touchStartY = 0;
         this.touchEndX = 0;
+        this.touchEndY = 0;
     }
 
     destroy() {
+        // Clean up global keydown listener
         document.removeEventListener('keydown', this.boundHandleKeyDown);
-        document.removeEventListener('touchstart', this.boundHandleTouchStart);
-        document.removeEventListener('touchmove', this.boundHandleTouchMove);
-        document.removeEventListener('touchend', this.boundHandleTouchEnd);
+        // Clean up touch listeners from the specific target
+        if (this.swipeTarget) {
+            this.swipeTarget.removeEventListener('touchstart', this.boundHandleTouchStart);
+            this.swipeTarget.removeEventListener('touchmove', this.boundHandleTouchMove);
+            this.swipeTarget.removeEventListener('touchend', this.boundHandleTouchEnd);
+        }
     }
 }
 
