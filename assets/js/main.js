@@ -484,14 +484,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Animate the button and final title out
             tl.to([enterSiteBtn, loadingTextEl], {
                 opacity: 0,
-                duration: 0.5,
+                duration: 0.25,
                 ease: 'power2.in',
                 stagger: 0.1,
             });
             // 2. Then, animate the entire overlay out
             tl.to(loadingOverlay, {
                 x: '100%',
-                duration: ANIMATION_DURATIONS.overlayLeave,
+                duration: ANIMATION_DURATIONS.overlayLeave*1.5,
                 ease: ANIMATION_EASES.overlayLeave,
                 onComplete: () => loadingOverlay.remove(),
             });
