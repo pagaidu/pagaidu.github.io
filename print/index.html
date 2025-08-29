@@ -1,0 +1,149 @@
+<!doctype html>
+<html class="no-js" lang="lv">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drukas iestatījumi&nbsp;·&nbsp;Pagaidu</title>
+    <meta name="generator" content="Eleventy">
+    <meta name="author" content="Pagaida">
+    <meta name="description" content="Vietne, kurā apkopoti īsi, viegli un ne tik viegli lasāmi teksti. Rakstīts latviešu valodas vārdā.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#f4ebdb">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="canonical" href="/print/">
+    <meta property="og:site_name" content="Pagaidu">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="lv_LV">
+    <meta property="og:url" content="/print/">
+    <meta property="og:title" content="Drukas iestatījumi&nbsp;·&nbsp;Pagaidu">
+    <meta property="og:description" content="Konfigurē izdruku mājas drukai un saglabā PDF">
+    <meta property="og:image" content="/assets/images/cover-og.jpg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Drukas iestatījumi&nbsp;·&nbsp;Pagaidu">
+    <meta name="twitter:description" content="Konfigurē izdruku mājas drukai un saglabā PDF">
+    <meta name="twitter:image" content="/assets/images/cover-tw.jpg">
+    <link rel="preload" href="/assets/css/styles.css" as="style">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+    <script defer src="/assets/js/seamless-scroll-polyfill.js"></script>
+    <script defer src="/assets/js/barba.min.js"></script>
+    <script defer src="/assets/js/anime.min.js"></script>
+    <!-- GSAP is required for transitions in main.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  </head>
+  <body data-barba="wrapper">
+    <!-- Preloader for initial page load -->
+    <div class="loading-overlay">
+      <div class="loading-container">
+        <div class="loader-wrapper">
+        <button class="button enter-site-btn" style="display: none; opacity: 0;">Apskatīt grāmatu</button>
+        <div class="circular-loader">
+          <svg viewBox="0 0 100 100">
+            <circle class="progress-background" cx="50" cy="50" r="45"></circle>
+            <circle class="progress-circle" cx="50" cy="50" r="45"></circle>
+          </svg>
+          <span class="loading-percentage">0%</span>
+        </div>
+        </div>
+        <div class="loading-text">Pagaidi</div>
+        <div class="fallback-message">
+          Ja lapa neielādējas, lūdzu, atspējojiet satura bloķētājus vai mēģiniet vēlāk.
+          <button class="disable-overlay-btn">Ienākt</button>
+        </div>
+      </div>
+    </div>
+    <!-- Noscript fallback to hide the preloader if JS is disabled -->
+    <noscript>
+      <style>
+        .loading-overlay { display: none; }
+      </style>
+    </noscript>
+
+    <div class="fadein">
+      
+<div data-barba="container" class="container" data-barba-namespace="default">
+    <main data-barba="content" class="post">
+      <article class="post__article print"> 
+        <div class="content-wrapper">
+            
+<section class="print-config" id="print-config" aria-labelledby="print-config-title">
+	<h1 id="print-config-title">Drukas iestatījumi</h1>
+	<form id="printForm" class="print-form" autocomplete="off">
+		<fieldset>
+			<legend>Lapas un makets</legend>
+			<label>Formāts
+				<select name="pageSize">
+					<option value="A5" selected>A5</option>
+					<option value="A6">A6</option>
+				</select>
+			</label>
+			<p>Orientācija: Ainava (fiksēta)</p>
+			<label>Maliņas (mm)
+				<input type="number" name="margin" min="5" max="30" value="12">
+			</label>
+			<label>Kolonnas
+				<select name="columns">
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+				</select>
+			</label>
+			<label><input type="checkbox" name="pageBreakBeforeTitles" checked> Lapas pārtraukums pirms virsrakstiem</label>
+			<label><input type="checkbox" name="duplex" checked> Divpusējā druka</label>
+		</fieldset>
+		<fieldset>
+			<legend>Krāsas un apdares</legend>
+			<label>Krāsa
+				<select name="colorMode">
+					<option value="color" selected>Krāsains</option>
+					<option value="bw">Melnbalts</option>
+				</select>
+			</label>
+			<label><input type="checkbox" name="roundedCorners"> Noapaļoti stūri</label>
+			<label><input type="checkbox" name="cropMarks"> Griešanas atzīmes</label>
+		</fieldset>
+		<div class="print-actions">
+			<button type="button" id="buildPreview">Veidot priekšskatījumu</button>
+			<button type="button" id="printNow" disabled>Saglabāt kā PDF / Drukāt</button>
+			<button type="button" id="shareConfig">Kopīgot iestatījumus (URL)</button>
+		</div>
+	</form>
+	<p id="colorEstimate" class="small muted"></p>
+	<details class="print-instructions" open>
+		<summary>Padomi mājas drukai</summary>
+		<ol>
+			<li>Printerī izvēlies Save as PDF vai savu printeri. Orientation: Landscape.</li>
+			<li>Izmērs: izvēlies A5 vai A6. Scale 100%. Noņem Headers/Footers.</li>
+			<li>Ieslēdz divpusējo druku. Pirmā lapa apvieno vāku (labajā pusē) un aizmuguri (kreisajā pusē) salocīšanai.</li>
+			<li>Krāsains režīms izmanto siltu papīra fonu; melnbalts — balts fons tintei taupīgāk.</li>
+			<li>Ja vajadzīgas griešanas atzīmes, ieslēdz tās un pēc drukas sagriez un saloki.</li>
+		</ol>
+	</details>
+</section>
+
+<section id="print-root" class="print-root" aria-live="polite"></section>
+
+<script defer src="/assets/js/print.js"></script>
+
+
+            </div>
+        </article>
+    </main>
+</div><footer class="footer ">
+    <div class="footer-container">
+        <ul>
+            <li><a href="/" class="footer-link" data-page="sakums">Sākums</a></li>
+            
+            <li><a href="/atsauksme/" class="footer-link" data-page="atsauksme">Atsauksme</a></li>
+        </ul>        
+        <p>Saturs aizsargāts saskaņā ar <a class="nowrap license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="license noopener">CC BY-NC-SA 4.0</a>.</p>
+    </div>
+</footer>
+ 
+    </div>
+    <script defer src="/assets/js/main.js"></script>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43fc4571eca348319c6158023797ce28"}'></script>
+  </body>
+</html>

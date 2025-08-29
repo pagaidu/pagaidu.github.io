@@ -460,48 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
             percentageEl.textContent = `${Math.round(percent)}%`;
         }
 
-        // --- Smoothed progress animation (prevents big jumps) ---
-        let displayedProgress = 0;
-        let targetProgress = 0;
-        let rafId = null;
-        let finishedShown = false;
-        const minShowMs = 700; // keep overlay visible for at least this long
-        const startTime = performance.now();
-
-        function progressTick() {
-            // Smoothly approach the target; higher factor = faster catch-up
-            const smoothingFactor = 0.2;
-            const diff = targetProgress - displayedProgress;
-            if (diff > 0) {
-                displayedProgress += diff * smoothingFactor;
-                // Avoid overshooting before final 100%
-                if (targetProgress < 100) {
-                    displayedProgress = Math.min(displayedProgress, targetProgress - 0.1);
-                } else {
-                    displayedProgress = Math.min(displayedProgress, 100);
-                }
-            }
-            setProgress(displayedProgress);
-
-            // Finish only when we've reached 100 and minimum show time passed
-            const elapsed = performance.now() - startTime;
-            if (!finishedShown && targetProgress === 100 && displayedProgress >= 99.8 && elapsed >= minShowMs) {
-                finishedShown = true;
-                cancelAnimationFrame(rafId);
-                setProgress(100);
-                // Give the UI a beat to display 100%
-                setTimeout(onLoadingFinished, 120);
-                return;
-            }
-            rafId = requestAnimationFrame(progressTick);
-        }
-
-        function startProgressLoop() {
-            if (rafId == null) {
-                rafId = requestAnimationFrame(progressTick);
-            }
-        }
-
 function onLoadingFinished() {
     clearTimeout(fallbackTimeout);
 
@@ -525,23 +483,22 @@ function onLoadingFinished() {
                 duration: 0.4,
                 ease: 'power1.in',
             }, "<");
-            // 3. Change text and prepare for reveal without flashing old text (iOS-safe)
+            // 3. Change text and prepare for reveal
             exitTl.call(() => {
-                // Ensure both elements are hidden before swapping
-                gsap.set([loadingTextEl, enterSiteBtn], { autoAlpha: 0, y: 20 });
                 loadingTextEl.textContent = 'Gatavs lasīšanai!';
                 enterSiteBtn.style.display = 'block';
             });
-            // 4. Reveal the new title and the button smoothly
-            exitTl.to([loadingTextEl, enterSiteBtn], {
-                autoAlpha: 1,
+            // 4. Reveal the new title and the button
+            exitTl.fromTo([enterSiteBtn, loadingTextEl], {
+                opacity: 0,
+                y: 20,
+            }, {
+                opacity: 1,
                 y: 0,
                 duration: 0.8,
                 ease: 'power2.out',
                 stagger: 0.1,
-                force3D: true,
-                immediateRender: false,
-            });
+            }, ">-0.2");
         }
 
         function revealSite() {
@@ -577,13 +534,11 @@ function onLoadingFinished() {
 
         function assetLoaded() {
             loadedAssets++;
-            const rawPercent = (loadedAssets / totalAssets) * 100;
-            // Reserve the last 5% for finalization to avoid instant jump to 100
-            const cappedTarget = Math.min(95, rawPercent);
-            targetProgress = Math.max(targetProgress, cappedTarget);
-            // When everything is loaded, move target to 100 and let smoothing finish it
+            const percent = (loadedAssets / totalAssets) * 100;
+            setProgress(percent);
             if (loadedAssets === totalAssets) {
-                targetProgress = 100;
+                // Use a short timeout to ensure 100% is visible briefly
+                setTimeout(onLoadingFinished, 250);
             }
         }
 
@@ -602,12 +557,10 @@ function onLoadingFinished() {
             }).then(assetLoaded);
         }
 
-        // Start smooth loop immediately so fast/cached loads still animate nicely
-        startProgressLoop();
-
         if (totalAssets === 0) {
-            // If no assets, still animate quickly to 100 to avoid flicker
-            targetProgress = 100;
+            // If no assets, finish immediately
+            setProgress(100);
+            setTimeout(onLoadingFinished, 250);
         } else {
             images.forEach(img => {
                 // If image is cached and complete, count it immediately
